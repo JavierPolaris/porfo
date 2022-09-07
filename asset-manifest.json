@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/porfo/static/css/main.0d4e8a8d.css",
+    "main.js": "/porfo/static/js/main.ad4ffd8b.js",
+    "static/js/787.58dc9919.chunk.js": "/porfo/static/js/787.58dc9919.chunk.js",
+    "static/media/musica.mp3": "/porfo/static/media/musica.dec2d7bbed4c076f670e.mp3",
+    "static/media/backA.gif": "/porfo/static/media/backA.1955c6999f54d5113688.gif",
+    "static/media/fondo.png": "/porfo/static/media/fondo.9709d20691a6b4f51985.png",
+    "static/media/FJuego.png": "/porfo/static/media/FJuego.2bfe981c27f600081b4c.png",
+    "static/media/piña.png": "/porfo/static/media/piña.ae113892522453127940.png",
+    "static/media/yoAb1.png": "/porfo/static/media/yoAb1.94c3fa370165d0ecf0ca.png",
+    "static/media/piperS.png": "/porfo/static/media/piperS.62b661c1f08bf1793cea.png",
+    "static/media/piper.png": "/porfo/static/media/piper.c2aa9dcc26ba9a5c21e0.png",
+    "static/media/yoAb.png": "/porfo/static/media/yoAb.0dd1a8fc2a5586cd3da4.png",
+    "static/media/lava.png": "/porfo/static/media/lava.93ff5d4afb80e84a290d.png",
+    "static/media/be.png": "/porfo/static/media/be.29204ca64957ebc41353.png",
+    "static/media/lemming.gif": "/porfo/static/media/lemming.4f0689b990130d669d88.gif",
+    "static/media/lk.png": "/porfo/static/media/lk.23233858a0f813a20669.png",
+    "static/media/tw.png": "/porfo/static/media/tw.c0326596c313df1491e6.png",
+    "index.html": "/porfo/index.html",
+    "main.0d4e8a8d.css.map": "/porfo/static/css/main.0d4e8a8d.css.map",
+    "main.ad4ffd8b.js.map": "/porfo/static/js/main.ad4ffd8b.js.map",
+    "787.58dc9919.chunk.js.map": "/porfo/static/js/787.58dc9919.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0d4e8a8d.css",
+    "static/js/main.ad4ffd8b.js"
+  ]
+}
