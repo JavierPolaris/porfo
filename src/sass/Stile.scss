@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body{
+
+}
+
+
+.Fondo{
+  width: 800px;
+  position: absolute;
+  left: 370px;
+}
+
+.spaceBar{
+color: white;
+position: absolute;
+left: 480px;
+top: 350px;
+
+font-family: 'Press Start 2P', cursive;
+font-size: 15px;
+animation: taadaa 1.5s infinite;
+}
+@keyframes taadaa { 
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.play1,.stop1,.play,.stop{
+width: 13px;
+border: none;
+background: none;
+}
+
+.play,.play1{
+  position: absolute;
+  top: 5px;
+  left: 220px;
+}
+.stop,.stop1{
+  position: absolute;
+  top: 7px;
+  left: 231px;
+}
+iframe{display:none;}
+
+.soniquete{
+  color: white;
+  position: absolute;
+  left: 378px;
+  top: 4px;
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
+}
+
+.contenedorAbo{
+  width: 800px;
+  height: 600px;
+  
+  position: absolute;
+  left: 370px;
+ 
+}
+
+.yo{
+  width: 100px;
+  position: absolute;
+  left: 49px;
+  top: 79px;
+  z-index: 2;
+}
+.yo1{
+  width: 254px;
+  position: absolute;
+  left: 534px;
+  top: 405px;
+  border-radius: 59px;
+
+}
+
+.cabecera{
+  color: rgb(109 18 18);
+  position: absolute;
+  left: 63px;
+  top: 45px;
+  font-family: "Press Start 2P", cursive;
+  font-size: 17.2px;
+}
+.cabecera1{
+  color: rgb(248 255 0);
+  position: absolute;
+  left: 67px;
+  top: 44px;
+  font-family: "Press Start 2P", cursive;
+  font-size: 17px;
+}
+
+.parrafo{
+  width: 487px;
+  background-color: rgba($color: #787878, $alpha: 0.5);
+
+    color: #ffbc00;
+    position: absolute;
+    left: 190px;
+    top: 75px;
+    font-family: "Press Start 2P", cursive;
+    font-size: 10px;
+    text-align: left;
+    line-height: 25px;
+}
+.rrss{
+  display: flex;
+  position: absolute;
+  top: 240px;
+  left: 32px;
+}
+.twiter{
+  background: none;
+  border: none;
+  
+ 
+}
+.tw{
+  width: 33px;
+}
+
+.backAb{
+   position: absolute;
+   width: 800px;
+   height: 600px;
+  left: 370px;
+  opacity: 100%;
+
+}
