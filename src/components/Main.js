@@ -14,9 +14,10 @@ class Main extends Component {
             
             <Route path='/' element={<Home />} />
             <Route path='/home' element={<Home />} />
+            <Route path='/porfo' element={<Home />} />
             <Route path='/juego' element={<Juego />} />
             <Route path='/about' element={<About />} />
-            {/* <Route path='*' element={<p>There's nothing here: 404!</p>} /> */}
+            <Route path='*' element={<p>There's nothing here: 404!</p>} />
           </Routes>
         </div>
       );
