@@ -54,7 +54,7 @@ export default function About() {
                         Mi nombre es Javier García-Rojo Cantón
                     </h1>
                     <p className='parrafo'>
-                        Desde hace años llevo formandome en el mundo audiovusal y de diseño, me apasiona llevar mis ideas a otro nivel, 
+                        Desde hace años llevo formandome en el mundo audiovisual y de diseño, me apasiona llevar mis ideas a otro nivel, 
                         tanto es asi que llevo dos años formandome como desarrollador FULLSTACKDEVELOPER mezclando mis dos pasiones el diseño y las aplicaciones WEB.
                         Actualmente he terminado un Bootcamp en "The Bridge". El BootCamp de Full Stack Developer es un curso/master intensivo de 4 meses donde se está continuamente practicando con las tecnologías que se utilizan en las empresas, y está orientada a la empleabilidad, haciendo de vehículo conductor de lo aprendido con los futuros trabajos.
                     </p>
