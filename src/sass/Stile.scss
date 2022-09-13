@@ -15,9 +15,9 @@ body{
 
 .spaceBar{
 color: white;
-left: 34%;
-position: fixed;
-top: 44%;
+position: sticky;
+/* top: 44%; */
+margin-top: 382px;
 
 font-family: 'Press Start 2P', cursive;
 font-size: 15px;
