@@ -15,9 +15,9 @@ body{
 
 .spaceBar{
 color: white;
-position: absolute;
-left: 480px;
-top: 350px;
+left: 34%;
+position: fixed;
+top: 44%;
 
 font-family: 'Press Start 2P', cursive;
 font-size: 15px;
@@ -32,30 +32,40 @@ animation: taadaa 1.5s infinite;
     opacity: 1;
   }
 }
+.despertador{
+  position: fixed;
+    left: 29%;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-items: center;
+}
 
 .play1,.stop1,.play,.stop{
 width: 13px;
 border: none;
 background: none;
+margin-left: 10px;
 }
 
 .play,.play1{
-  position: absolute;
-  top: 5px;
-  left: 220px;
+  // position: absolute;
+  // top: 5px;
+  // left: 220px;
 }
 .stop,.stop1{
-  position: absolute;
-  top: 7px;
-  left: 231px;
+  // position: absolute;
+  // top: 7px;
+  // left: 231px;
 }
 iframe{display:none;}
 
 .soniquete{
   color: white;
-  position: absolute;
-  left: 378px;
-  top: 4px;
+  // position: absolute;
+  // left: 378px;
+  // top: 4px;
   font-family: "Press Start 2P", cursive;
   font-size: 12px;
 }
