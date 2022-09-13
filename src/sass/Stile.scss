@@ -1,29 +1,151 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+
+  @media screen and (max-width: 2560px) {
+    .center {
+      position: absolute;
+      right: 2046px;
+      top: 14px;
+    }
+    .spaceBar{
+      color: white;
+      position: fixed;
+      /* top: 44%; */
+      margin-top: 382px;
+      left: 1001px;
+      font-family: "Press Start 2P", cursive;
+      font-size: 15px;
+      animation: taadaa 1.5s infinite;
+    }
+  }
+  @media screen and (max-width: 1600px) {
+    .center {
+      position: absolute;
+      right: 1483px;
+      top: 14px;
+    }
+    .spaceBar{
+      color: white;
+      position: fixed;
+      /* top: 44%; */
+      margin-top: 382px;
+      left: 596px;
+      font-family: "Press Start 2P", cursive;
+      font-size: 15px;
+      animation: taadaa 1.5s infinite;
+    }
+  }
+  @media screen and (max-width: 1440px) {
+    .center {
+      position: absolute;
+      right: 1483px;
+      top: 14px;
+    }
+    .spaceBar{
+      color: white;
+      position: fixed;
+      /* top: 44%; */
+      margin-top: 382px;
+      left: 434px;
+      font-family: "Press Start 2P", cursive;
+      font-size: 15px;
+      animation: taadaa 1.5s infinite;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    .center {
+      position: absolute;
+      right: 1245px;
+      top: 13px;
+    }
+    .spaceBar{
+      color: white;
+      position: fixed;
+      /* top: 44%; */
+      margin-top: 382px;
+      left: 261px;
+      font-family: "Press Start 2P", cursive;
+      font-size: 15px;
+      animation: taadaa 1.5s infinite;
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .center {
+      position: absolute;
+      right: 987px;
+      top: 13px;
+    }
+    .spaceBar{
+      color: white;
+      position: fixed;
+      /* top: 44%; */
+      margin-top: 382px;
+      left: 261px;
+      font-family: "Press Start 2P", cursive;
+      font-size: 15px;
+      animation: taadaa 1.5s infinite;
+    }
+  }
+  
+  @media screen and (max-width: 425px) {
+    .center {
+      position: absolute;
+      right: 651px;
+      top: 13px;
+    }
+    .spaceBar{
+      color: white;
+      position: fixed;
+      /* top: 44%; */
+      margin-top: 382px;
+      left: 261px;
+      font-family: "Press Start 2P", cursive;
+      font-size: 15px;
+      animation: taadaa 1.5s infinite;
+    }
+  }
+  
+  @media screen and (max-width: 320px) {
+    .center {
+      position: absolute;
+      right: 542px;
+      top: 13px;
+    }
+    .spaceBar{
+      color: white;
+      position: fixed;
+      /* top: 44%; */
+      margin-top: 382px;
+      left: 261px;
+      font-family: "Press Start 2P", cursive;
+      font-size: 15px;
+      animation: taadaa 1.5s infinite;
+    }
+  }
+  
 body{
-
+  background: linear-gradient(to bottom, #ff0091, #ed03a7, #d51ebb, #b533ce, #8a43de, #7d3bc7, #6f33b1, #622c9b, #5d1866, #47103b, #2a0d1c, #000000);
 }
-
+.back{
+  height: 660px;
+  width: 1083px;
+  position: absolute;
+  left: 219px;
+  top: -15px;
+  z-index: 1;
+}
 .inicio{
   display: flex;
 }
 .Fondo{
   width: 800px;
-  position: fixed;
-  left: 25%;
+  position: absolute;
+  left: 363px;
+  border-radius: 27px;
 }
 
-.spaceBar{
-color: white;
-position: sticky;
-/* top: 44%; */
-margin-top: 382px;
-left: 34%;
 
-font-family: 'Press Start 2P', cursive;
-font-size: 15px;
-animation: taadaa 1.5s infinite;
-}
 @keyframes taadaa { 
   0% {
     opacity: 0;
@@ -34,8 +156,8 @@ animation: taadaa 1.5s infinite;
   }
 }
 .despertador{
-  position: fixed;
-    left: 29%;
+  position: absolute;
+    left: 391px;
     display: flex;
     justify-content: space-evenly;
     flex-wrap: nowrap;
@@ -149,4 +271,10 @@ iframe{display:none;}
   left: 370px;
   opacity: 100%;
 
+}
+canvas{
+  width: 827px;
+    position: absolute;
+    left: 25%;
+    border-radius: 27px;
 }

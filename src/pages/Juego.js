@@ -12,6 +12,7 @@ import Fondo from '../assets/img/fondo.png'
 import Play from '../assets/img/play.png';
 import Stop from '../assets/img/stop.png';
 import Musica from '../assets/music/musica.mp3';
+import Back from '../assets/img/back.png';
 
 
 
@@ -900,10 +901,11 @@ export default function Juego() {
 
 
             </div>
-
+            <img src={Back} className='back'/>
             <canvas id="canvas" style={{
                 position:"absolute",
-                left:"370px"
+                left:"348px",
+                top: "0px"
             }}>
                 {/* <div className="lemming--walker" ></div> */}
                 <img src={Lemming} className='lemming' />

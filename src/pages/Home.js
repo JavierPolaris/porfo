@@ -3,6 +3,7 @@ import FJuego from '../assets/img/FJuego.png';
 import Play from '../assets/img/play.png';
 import Stop from '../assets/img/stop.png';
 import Musica from '../assets/music/musica.mp3';
+import Back from '../assets/img/back.png';
 
 
 
@@ -46,6 +47,7 @@ export default function Home() {
     return (
         <div className='center'>
             <div className='inicio'>
+                <img src={Back} className='back'/>
                 <img src={FJuego} className='Fondo' />
                 <h1 className='spaceBar'>Pulsa la tecla "espacio" para continuar</h1>
 
