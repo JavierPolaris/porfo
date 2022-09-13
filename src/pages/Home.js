@@ -49,7 +49,7 @@ export default function Home() {
                 <img src={FJuego} className='Fondo' />
                 <h1 className='spaceBar'>Pulsa la tecla "espacio" para continuar</h1>
 
-                <div id="despertador" >
+                <div className="despertador" >
                     <h2 className='soniquete'>Music</h2>
                     <button className="play">
                         <img src={Play} className='play1' />
