@@ -94,7 +94,7 @@ export default function Home() {
                             </div>
                             <div className='proCardText'>
                                 <h1 className='proCardTextH'>
-                                    Cines Paradiso
+                                    SPA Sport
                                 </h1>
                                 <p className='proCardTexP'>
                                     Trabajo realizado en "The Bridge", App para la compra de dorsales en pruebas deportivas, el cliente puede filtrar por comunidades o por deportes y realizar la inscripción.
