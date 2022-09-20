@@ -34,7 +34,7 @@ export default function Juego() {
         }
 
         function callar() {
-           
+
             var iframe = document.getElementsByTagName("iframe");
 
             if (iframe.length > 0) {
@@ -333,6 +333,13 @@ export default function Juego() {
                 width: 150,
                 height: 40
             });
+            //plataforma-2
+            terrain.push({
+                x: 250,
+                y: 480,
+                width: 20,
+                height: 40
+            });
 
             //escaleras
             terrain.push({
@@ -427,7 +434,7 @@ export default function Juego() {
                 if (player.velX < player.speed) {
                     player.velX++;
                 }
-                
+
             }
             if (keys[37] || keys[65]) {
                 // flecha izquierda
@@ -450,7 +457,7 @@ export default function Juego() {
             }
 
             if (keys[27]) {
-                if(status === 'win') {
+                if (status === 'win') {
                     window.location.href = "/Home";
                 }
             }
@@ -714,6 +721,8 @@ export default function Juego() {
             //  plataforma
             ctx.drawImage(suelo, 125, 160, 50, 50)
 
+            ctx.drawImage(suelo, 220, 470, 50, 50)
+
             // 9 plataforma
             ctx.drawImage(suelo, 640, 70, 50, 50)
             ctx.drawImage(suelo, 672, 70, 50, 50)
@@ -888,23 +897,23 @@ export default function Juego() {
         <div className='center'>
 
 
-<div id="despertador" >
+            <div id="despertador" style={{display:'none'}} >
                 <h2 className='soniquete'>Music</h2>
                 <button className="play">
-                    <img src={Play} className='play1'/>
-                    </button>
+                    <img src={Play} className='play1' />
+                </button>
                 <button className="stop">
-                <img src={Stop} className='stop1'/>
+                    <img src={Stop} className='stop1' />
                 </button>
                 {/* <iframe src={Musica} className='sonido' autoplay>
                 </iframe> */}
 
 
             </div>
-            <img src={Back} className='back'/>
+            <img src={Back} className='back' />
             <canvas id="canvas" style={{
-                position:"absolute",
-                left:"348px",
+                position: "absolute",
+                left: "348px",
                 top: "0px"
             }}>
                 {/* <div className="lemming--walker" ></div> */}

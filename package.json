@@ -1,5 +1,5 @@
 {
-  "homepage":".",
+  "homepage": ".",
   "name": "porfo",
   "version": "0.1.0",
   "private": true,
@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "easeljs": "^1.0.2",
     "easeljs-react": "^0.2.0",
+    "emailjs-com": "^3.2.0",
     "get-pixels": "^3.3.3",
     "gif-encoder-2": "^1.0.5",
     "i": "^0.3.7",
@@ -49,5 +50,4 @@
   "devDependencies": {
     "gh-pages": "^4.0.0"
   }
-  
 }

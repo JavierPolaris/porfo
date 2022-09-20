@@ -16,7 +16,7 @@ export default function About() {
     useEffect(() => {
         document.body.onkeyup = function(e){
             if(e.keyCode == 32){
-                window.location.href = "/home";
+                window.location.href = "/juego";
             }
             if(e.keyCode == 27){
                 window.location.href = "/home ";
@@ -62,8 +62,9 @@ export default function About() {
                
             </div>
             <h1 className='spaceBar' style={{
+                width: '711px',
                 position:'absolute',
-                top:'439px',
+                top:'71px',
                 left:'438px',
                 textAlign:'center',
                 lineHeight:'25px'
