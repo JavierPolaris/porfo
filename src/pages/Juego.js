@@ -913,8 +913,7 @@ export default function Juego() {
             <img src={Back} className='back' />
             <canvas id="canvas" style={{
                 position: "absolute",
-                left: "348px",
-                top: "0px"
+              
             }}>
                 {/* <div className="lemming--walker" ></div> */}
                 <img src={Lemming} className='lemming' />

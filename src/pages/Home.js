@@ -42,7 +42,7 @@ export default function Home() {
             </div>
            
             <div className='yoHome'>
-                <h1 className='Full'>JUNIOR FULL STACK DEVELOP </h1>
+                <h1 className='Full'>FULL STACK DEVELOP </h1>
                 <div className='full'>
                 <h1 className='Full1'>Front</h1>
                 <h1 className='Full1A'>END </h1>

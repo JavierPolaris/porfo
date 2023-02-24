@@ -61,11 +61,10 @@ export default function About() {
                 </div>
                
             </div>
-            <h1 className='spaceBar' style={{
+            <h1 className='spaceBar1' style={{
                 width: '711px',
                 position:'absolute',
-                top:'71px',
-                left:'438px',
+                
                 textAlign:'center',
                 lineHeight:'25px'
             }}>Pulsa la tecla "Espacio" para volver a juagar<br></br>o "Esc para volver"</h1>
