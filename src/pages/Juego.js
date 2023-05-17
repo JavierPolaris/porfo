@@ -895,7 +895,7 @@ export default function Juego() {
 
     return (
         <div className='center'>
-
+          
 
             <div id="despertador" style={{display:'none'}} >
                 <h2 className='soniquete'>Music</h2>
