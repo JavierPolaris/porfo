@@ -4,6 +4,9 @@ $easeInOutQuad: cubic-bezier(0.455, 0.030, 0.515, 0.955);
 
 body {
   background-color: black;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
 }
 #despertador{
   position: absolute;
@@ -113,22 +116,59 @@ body {
       color: white;
 }
 }
-
-
-  .spaceBar1 {
-    color: white;
-    position: fixed;
-    top: 198px;
-    margin-top: 367px;
-    font-family: "Press Start 2P", cursive;
-    font-size: 15px;
-    animation: taadaa 1.5s infinite;
+.about-page {
+  display: flex;
+  width: 100%;
+  background-image: url('../assets/img/backA.gif');
+  background-size: cover;
+  background-position: center;
+  flex-direction: column;
+  align-items: center;
 }
+
+
+
+
   .contenedorAbo {
-    width: 800px;
-    height: 600px;
-    position: absolute;
-    left: 645px;
+    display: flex;
+    flex-direction: row;
+    padding: 4% 9% 15% 0%;
+    justify-content: center;
+}
+
+
+
+.yoMis{
+  width: 43%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.aboutMe {
+  font-family: "Press Start 2P", cursive;
+  font-size: 18px;
+  text-align: left;
+  line-height: 35px;
+  background-color: rgba(120, 120, 120, 0.5);
+  color: #ffbc00;
+  width: 50%;
+}
+@media (max-width: 768px) {
+  .contenedorAbo {
+    flex-direction: column; /* Colocar elementos uno encima del otro */
+    padding: 5%;
+    align-items: center;
+  }
+
+  .yoMis, .aboutMe {
+    width: 100%; /* Que ocupen todo el ancho disponible */
+    text-align: center; /* Centrar el texto */
+  }
+  .aboutMe {
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 2%; /* Reducir el padding para pantallas pequeñas */
+  }
 }
 
   .center {
@@ -259,26 +299,9 @@ body {
 }
 
 @media screen and (max-width: 2560px) {
-  .spaceBar1 {
-    color: white;
-    position: fixed;
-    top: 198px;
-    left: 738px;
-    margin-top: 367px;
-    font-family: "Press Start 2P", cursive;
-    font-size: 15px;
-    animation: taadaa 1.5s infinite;
-}
-  .contenedorAbo {
-    width: 800px;
-    height: 600px;
-    position: absolute;
-    left: 447px;
-}
-  .backAb {
-    left: 14vw;
-   
-}
+
+
+  
 
  
 
@@ -333,22 +356,8 @@ body {
     margin-top: -45px;
     align-items: center;
 }
-  .spaceBar1 {
-    color: white;
-    position: fixed;
-    top: 198px;
-    left: 738px;
-    margin-top: 367px;
-    font-family: "Press Start 2P", cursive;
-    font-size: 15px;
-    animation: taadaa 1.5s infinite;
-}
-  .contenedorAbo {
-    width: 800px;
-    height: 600px;
-    position: absolute;
-    left: 359px;
-}
+
+
 
  
  
@@ -397,25 +406,8 @@ body {
 }
 
 @media screen and (max-width: 1600px) {
-  .spaceBar1 {
-    color: white;
-    position: fixed;
-    top: 198px;
-    left: 472px;
-    margin-top: 367px;
-    font-family: "Press Start 2P", cursive;
-    font-size: 15px;
-    animation: taadaa 1.5s infinite;
-}
-  .contenedorAbo {
-    width: 800px;
-    height: 600px;
-    position: absolute;
-    left: 136px;
-}
-  .backAb {
-    left: 5vw;
-}
+  
+
  
 
 
@@ -461,9 +453,7 @@ body {
 }
 
 @media screen and (max-width: 1440px) {
-  .backAb {
-    left: 4vw;
-}
+
  
 
   
@@ -1083,21 +1073,24 @@ iframe {
   font-size: 12px;
 }
 
-// .contenedorAbo {
-//   width: 800px;
-//   height: 600px;
+.spaceBar1 {
+  color: white;
+  font-family: "Press Start 2P", cursive;
+  font-size: 15px;
+  animation: taadaa 1.5s infinite;
+}
+@media (max-width: 768px) {
+  .spaceBar1 {
+    font-size: 12px; /* Reducir el tamaño en pantallas pequeñas */
+    padding: 5%;
+  }
+}
 
-//   position: absolute;
-//   left: 370px;
 
-// }
 
 .yo {
-  width: 100px;
-  position: absolute;
-  left: 49px;
-  top: 79px;
-  z-index: 2;
+  width: 26%;
+
 }
 
 .yo1 {
@@ -1110,12 +1103,15 @@ iframe {
 }
 
 .cabecera {
-  color: rgb(109 18 18);
-  position: absolute;
-  left: 63px;
-  top: 45px;
+  padding-block-start: 5%;
+  color: rgb(248 255 0);
   font-family: "Press Start 2P", cursive;
   font-size: 17.2px;
+}
+@media (max-width: 768px) {
+  .cabecera {
+    padding: 5% 0 0 12%;
+  }
 }
 
 .cabecera1 {
@@ -1127,24 +1123,24 @@ iframe {
   font-size: 17px;
 }
 
-.parrafo {
-  width: 942px;
-  background-color: rgba(120, 120, 120, 0.5);
-  color: #ffbc00;
-  position: absolute;
-  left: 230px;
-  top: 81px;
-  font-family: "Press Start 2P", cursive;
-  font-size: 18px;
-  text-align: left;
-  line-height: 35px;
+
+.parrafo{
+  padding: 3%;
 }
 
 .rrss {
   display: flex;
-  position: absolute;
-  top: 240px;
-  left: 32px;
+
+}
+@media (max-width: 768px) {
+  .rrss {
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .rrss button {
+    padding: 10px; /* Aumentar el área de toque para botones */
+  }
 }
 
 .twiter {
@@ -1160,10 +1156,12 @@ iframe {
 
 .backAb {
   position: absolute;
-  // width: 800px;
-  // height: 600px;
-  // left: 370px;
-  opacity: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
 
 }
 
