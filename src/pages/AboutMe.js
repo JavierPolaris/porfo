@@ -70,8 +70,7 @@ export default function About() {
                 <div className='aboutMe'>
                     <p className='parrafo'>
 
-                        Aquí tienes la biografía actualizada con la nueva frase al final:
-
+                       
                         Actualmente, soy el desarrollador web full stack en Silbon, una empresa de moda donde llevo casi 2 años. En mi rol, me encargo de tareas que van desde el front-end hasta la implementación de datalyers y la creación de aplicaciones para optimizar diferentes procesos de la compañía.
 
                         Antes de unirme a Silbon, trabajé como desarrollador front-end en otra empresa, lo que me permitió consolidar mi experiencia en el campo. Mi recorrido en el mundo del desarrollo comenzó al inicio de la pandemia, cuando decidí formarme intensamente en el sector tecnológico. Este impulso me llevó a completar un Bootcamp en "The Bridge", donde me especialicé en Full Stack Development. El curso fue un intensivo de 4 meses en el que practiqué las tecnologías más demandadas en el mercado laboral.
