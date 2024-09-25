@@ -5,12 +5,36 @@ $easeInOutQuad: cubic-bezier(0.455, 0.030, 0.515, 0.955);
 body {
   background-color: black;
 }
+#despertador{
+  position: absolute;
+  top: 0;
+  display: flex;
+  gap: 5%;
+  z-index: 9999;
+}
 @media only screen and (max-width: 768px) {
+  .portrait-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.95);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
   .touch-controls {
       position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) rotate(90deg);
+      bottom: 35px;
+      left: 0;
+     
       display: flex;
       justify-content: space-between;
       width: 100vw;
@@ -18,35 +42,76 @@ body {
       z-index: 2;
   }
 
-  .joystick,
-  .jump-button,
-  .shoot-button {
+  .joystick {
       transform: rotate(90deg); /* Revertir la rotación de los controles */
   }
 
-  .joystick {
-      width: 80px;
-      height: 80px;
-      background: rgba(128, 128, 128, 0.5);
-      border-radius: 50%;
-  }
+  .joystick-base {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 10px solid rgba(0, 136, 204, 0.1); /* #08c -> rgba(0, 136, 204, 0.1) */
+    background: rgba(0, 136, 204, 0.05);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) inset,
+                0 0 5px rgba(0, 0, 0, 0.2);
+    transition: border-color 0.3s;
+    cursor: pointer;
+    touch-action: none;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    position: relative; /* Para posicionar correctamente la shaft */
+}
+
+.joystick-base:hover,
+.joystick-base.active {
+    border-color: rgba(0, 136, 204, 0.2);
+}
+
+.joystick-base:hover .joystick-shaft,
+.joystick-base.active .joystick-shaft {
+    background: rgba(0, 136, 204, 0.35);
+}
+
+.joystick-base.active {
+    background: rgba(0, 136, 204, 0.1);
+}
+
+.joystick-shaft {
+    position: absolute;
+    top: calc(50% - 32px);
+    left: calc(50% - 32px);
+    height: 64px;
+    width: 64px;
+    border-radius: 50%;
+    background: rgba(0, 136, 204, 0.25);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.7) inset;
+    transition: background 0.3s;
+    will-change: transform;
+    touch-action: none;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
+
 
   .buttons {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       gap: 10px;
+      padding-inline-end: 7%;
   }
 
   .jump-button,
   .shoot-button {
       width: 60px;
       height: 60px;
-      background: rgba(128, 128, 128, 0.5);
-      border: none;
-      border-radius: 10px;
-      font-size: 14px;
+      border: 10px solid rgba(0, 136, 204, 0.1);
+      background: rgba(0, 136, 204, 0.05);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) inset, 0 0 5px rgba(0, 0, 0, 0.2);
+      transition: border-color 0.3s;
+      cursor: pointer;
+      touch-action: none;
+      -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+      border-radius: 50%;
       color: white;
-  }
+}
 }
 
 
@@ -65,10 +130,7 @@ body {
     position: absolute;
     left: 645px;
 }
-  .despertador{
-    left: 927px;
-    top: 25px;
-  }
+
   .center {
     width: 100vw;
     display: flex;
@@ -217,10 +279,7 @@ body {
     left: 14vw;
    
 }
-  .despertador{
-    left: 927px;
-    top: 25px;
-  }
+
  
 
 
@@ -290,10 +349,7 @@ body {
     position: absolute;
     left: 359px;
 }
-  .despertador{
-    left: 590px;
-    top: 25px;
-  }
+
  
  
 
@@ -446,10 +502,7 @@ body {
 }
 
 @media screen and (max-width: 1024px) {
-  .despertador {
-    left: 388px;
-    top: 25px;
-}
+
 
 
 
@@ -517,10 +570,7 @@ body {
   top: 51%;
   font-size: 10px;
 }
-.despertador{
-  left: 212px;
-    top: 13px;
-}
+
 
 }
 
@@ -540,10 +590,7 @@ body {
   top: 25%;
   font-size: 12px;
 }
-.despertador {
-  left: 152px;
-  top: 25px;
-}
+
 
   .imagencent {
     width: 72%;
@@ -602,10 +649,7 @@ body {
     top: 16%;
     font-size: 5px;
 }
-.despertador {
-  left: 63px;
-  top: 5px;
-}
+
 .contactImg1 {
   font-size: 0.5rem;
 }
@@ -714,10 +758,7 @@ body {
 }
 }
 @media screen and (max-width: 320px) {
-  .despertador {
-    left: 239px;
-    top: 25px;
-}
+
  
  
  
@@ -1005,16 +1046,7 @@ body {
   }
 }
 
-.despertador {
-  position: absolute;
- 
-  display: flex;
-  justify-content: space-evenly;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  align-items: center;
-  z-index: 2;
-}
+
 
 .play1,
 .stop1,
@@ -1150,24 +1182,24 @@ canvas {
   display: block;
 }
 
-/* Estilos para dispositivos móviles */
-@media only screen and (max-width: 768px) {
+/* Estilos para dispositivos móviles en orientación horizontal */
+@media only screen and (orientation: landscape) {
   .canvas-container {
       position: relative;
-      width: 100vh; /* Ancho ajustado para la rotación */
-      height: 100vw; /* Alto ajustado para la rotación */
-      transform: rotate(-90deg);
-      transform-origin: center center;
+      width: 100vw;
+      height: 100vh;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
   }
 
   canvas {
-      width: 100vh;
-      height: 100vw;
+      display: block;
   }
 
-  /* Ajustar la posición del canvas si es necesario */
   body {
+      margin: 0;
       overflow: hidden;
   }
 }

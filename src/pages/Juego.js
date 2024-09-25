@@ -20,12 +20,27 @@ export default function Juego() {
     const touchShoot = useRef(false);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const canvasRef = useRef(null);
-
+    const [isPortrait, setIsPortrait] = useState(false);
     // Función para detectar si es dispositivo táctil
     const isTouchDevice = () => {
         return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     };
+    useEffect(() => {
+        function handleOrientationChange() {
+            const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+            setIsPortrait(isPortrait);
+        }
 
+        handleOrientationChange(); // Establecer el estado inicial
+
+        window.addEventListener('orientationchange', handleOrientationChange);
+        window.addEventListener('resize', handleOrientationChange);
+
+        return () => {
+            window.removeEventListener('orientationchange', handleOrientationChange);
+            window.removeEventListener('resize', handleOrientationChange);
+        };
+    }, []);
     useEffect(() => {
 
 
@@ -126,7 +141,7 @@ export default function Juego() {
 
             piper = new Image();
             piper.src = Piper;
-        
+
             pina = new Image();
             pina.src = Pina;
             width = 800;
@@ -139,7 +154,7 @@ export default function Juego() {
                 y: height / 2,
                 width: 50,
                 height: 50,
-                speed: 6,
+                speed: 3,
                 velX: 0,
                 velY: 0,
                 jumping: false,
@@ -198,18 +213,18 @@ export default function Juego() {
                 y: -10,
                 width: 20,
                 height: 20,
-                speed: 8,
+                speed: 4,
                 mortal: false
             };
             friction = 0.8;
-            gravity = 0.8;
+            gravity = 0.2;
             enemy1 = {
                 color: '#E3504B',
                 x: 120,
                 y: 200,
                 width: 60,
                 height: 60,
-                speed: 4,
+                speed: 2,
                 direction: 'down',
                 alive: true,
                 mortal: true
@@ -219,7 +234,7 @@ export default function Juego() {
                 y: 417,
                 width: 60,
                 height: 60,
-                speed: 2,
+                speed: 1,
                 direction: 'right',
                 alive: true,
                 mortal: true,
@@ -429,25 +444,94 @@ export default function Juego() {
 
         // Controles táctiles
         if (isTouchDevice()) {
-                // Si es dispositivo táctil, solicitamos pantalla completa y bloqueamos orientación
-    if (isTouchDevice()) {
-        // Solo si ya estamos en pantalla completa
-        if (document.fullscreenElement) {
-          lockOrientation();
-        }
-      }
+            // Si es dispositivo táctil, solicitamos pantalla completa y bloqueamos orientación
+            if (isTouchDevice()) {
+                // Solo si ya estamos en pantalla completa
+                if (document.fullscreenElement) {
+                    lockOrientation();
+                }
+            }
 
 
+            // Obtener referencias al joystick y su shaft
+            const joystickBase = document.getElementById('joystick');
+            const joystickShaft = joystickBase.querySelector('.joystick-shaft');
+             // Variables para el movimiento
+             let startX = 0;
+             let startY = 0;
+             let movedX = 0;
+             let movedY = 0;
+             const maxDistance = 30; // Distancia máxima que el joystick puede moverse
 
+              // Funciones de manejo del toque
+            function handleJoystickStart(e) {
+                e.preventDefault();
+                const touch = e.targetTouches[0];
+                startX = touch.clientX;
+                startY = touch.clientY;
+
+                joystickBase.classList.add('active');
+            }
+
+            function handleJoystickMove(e) {
+                e.preventDefault();
+                const touch = e.targetTouches[0];
+                movedX = touch.clientX - startX;
+                movedY = touch.clientY - startY;
+
+                // Limitar el movimiento al radio máximo
+                const distance = Math.hypot(movedX, movedY);
+                const angle = Math.atan2(movedY, movedX);
+
+                if (distance > maxDistance) {
+                    movedX = maxDistance * Math.cos(angle);
+                    movedY = maxDistance * Math.sin(angle);
+                }
+
+                // Mover el joystick shaft
+                joystickShaft.style.transform = `translate(${movedX}px, ${movedY}px)`;
+
+                // Actualizar los estados de movimiento
+                updateJoystickMovement(movedX, movedY);
+            }
+
+            function handleJoystickEnd(e) {
+                e.preventDefault();
+                // Resetear posición del joystick shaft
+                joystickShaft.style.transform = `translate(0px, 0px)`;
+                joystickBase.classList.remove('active');
+
+                // Resetear estados de movimiento
+                touchLeft.current = false;
+                touchRight.current = false;
+            }
+
+            function updateJoystickMovement(x, y) {
+                // Definir umbral para considerar el movimiento
+                const threshold = 10;
+
+                if (x < -threshold) {
+                    touchLeft.current = true;
+                    touchRight.current = false;
+                } else if (x > threshold) {
+                    touchLeft.current = false;
+                    touchRight.current = true;
+                } else {
+                    touchLeft.current = false;
+                    touchRight.current = false;
+                }
+            }
+
+            
             // Inicializar controles táctiles
-            const joystick = document.getElementById('joystick');
+
             const jumpButton = document.getElementById('jump-button');
             const shootButton = document.getElementById('shoot-button');
 
             // Agregar event listeners para controles táctiles
-            joystick.addEventListener('touchstart', handleJoystickStart, { passive: false });
-            joystick.addEventListener('touchmove', handleJoystickMove, { passive: false });
-            joystick.addEventListener('touchend', handleJoystickEnd, { passive: false });
+            joystickBase.addEventListener('touchstart', handleJoystickStart, { passive: false });
+            joystickBase.addEventListener('touchmove', handleJoystickMove, { passive: false });
+            joystickBase.addEventListener('touchend', handleJoystickEnd, { passive: false });
 
             jumpButton.addEventListener('touchstart', handleJumpStart, { passive: false });
             jumpButton.addEventListener('touchend', handleJumpEnd, { passive: false });
@@ -456,7 +540,8 @@ export default function Juego() {
             shootButton.addEventListener('touchend', handleShootEnd, { passive: false });
 
             // Prevenir scroll en táctil
-            joystick.addEventListener('touchmove', preventDefault, { passive: false });
+            joystickBase.addEventListener('touchmove', preventDefault, { passive: false });
+
             jumpButton.addEventListener('touchmove', preventDefault, { passive: false });
             shootButton.addEventListener('touchmove', preventDefault, { passive: false });
         }
@@ -821,7 +906,11 @@ export default function Juego() {
             //dibujar jugador
 
 
-            ctx.drawImage(image, player.x, player.y, player.width, player.height)
+            if (player.facing === 'right') {
+                ctx.drawImage(image, player.x, player.y, player.width, player.height);
+            } else if (player.facing === 'left') {
+                ctx.drawImage(yo2, player.x, player.y, player.width, player.height);
+            }
 
 
             //dibujar victoria
@@ -881,65 +970,65 @@ export default function Juego() {
             requestId = requestAnimationFrame(update);
         }
         update();
-// Funciones de control táctil
-function preventDefault(e) {
-    e.preventDefault();
-}
+        // Funciones de control táctil
+        function preventDefault(e) {
+            e.preventDefault();
+        }
 
-function handleJoystickStart(e) {
-    e.preventDefault();
-    const touch = e.touches[0];
-    updateJoystick(touch);
-}
+        function handleJoystickStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            updateJoystick(touch);
+        }
 
-function handleJoystickMove(e) {
-    e.preventDefault();
-    const touch = e.touches[0];
-    updateJoystick(touch);
-}
+        function handleJoystickMove(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            updateJoystick(touch);
+        }
 
-function handleJoystickEnd(e) {
-    e.preventDefault();
-    touchLeft.current = false;
-    touchRight.current = false;
-}
+        function handleJoystickEnd(e) {
+            e.preventDefault();
+            touchLeft.current = false;
+            touchRight.current = false;
+        }
 
-function updateJoystick(touch) {
-    const rect = document.getElementById('joystick').getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const deltaX = touch.clientX - centerX;
+        function updateJoystick(touch) {
+            const rect = document.getElementById('joystick').getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const deltaX = touch.clientX - centerX;
 
-    if (deltaX < -10) {
-        touchLeft.current = true;
-        touchRight.current = false;
-    } else if (deltaX > 10) {
-        touchLeft.current = false;
-        touchRight.current = true;
-    } else {
-        touchLeft.current = false;
-        touchRight.current = false;
-    }
-}
+            if (deltaX < -10) {
+                touchLeft.current = true;
+                touchRight.current = false;
+            } else if (deltaX > 10) {
+                touchLeft.current = false;
+                touchRight.current = true;
+            } else {
+                touchLeft.current = false;
+                touchRight.current = false;
+            }
+        }
 
-function handleJumpStart(e) {
-    e.preventDefault();
-    touchJump.current = true;
-}
+        function handleJumpStart(e) {
+            e.preventDefault();
+            touchJump.current = true;
+        }
 
-function handleJumpEnd(e) {
-    e.preventDefault();
-    touchJump.current = false;
-}
+        function handleJumpEnd(e) {
+            e.preventDefault();
+            touchJump.current = false;
+        }
 
-function handleShootStart(e) {
-    e.preventDefault();
-    touchShoot.current = true;
-}
+        function handleShootStart(e) {
+            e.preventDefault();
+            touchShoot.current = true;
+        }
 
-function handleShootEnd(e) {
-    e.preventDefault();
-    touchShoot.current = false;
-}
+        function handleShootEnd(e) {
+            e.preventDefault();
+            touchShoot.current = false;
+        }
 
 
         //si el jugador es golpeado por los malos, vuelve a aparecer
@@ -1000,16 +1089,17 @@ function handleShootEnd(e) {
             document.body.removeEventListener("keydown", keyDownHandler);
             document.body.removeEventListener("keyup", keyUpHandler);
 
-            
+
             // Remover event listeners táctiles si es necesario
             if (isTouchDevice()) {
-                const joystick = document.getElementById('joystick');
+                const joystickBase = document.getElementById('joystick');
                 const jumpButton = document.getElementById('jump-button');
                 const shootButton = document.getElementById('shoot-button');
 
-                joystick.removeEventListener('touchstart', handleJoystickStart);
-                joystick.removeEventListener('touchmove', handleJoystickMove);
-                joystick.removeEventListener('touchend', handleJoystickEnd);
+                joystickBase.removeEventListener('touchstart', handleJoystickStart);
+                joystickBase.removeEventListener('touchmove', handleJoystickMove);
+                joystickBase.removeEventListener('touchend', handleJoystickEnd);
+                joystickBase.removeEventListener('touchmove', preventDefault);
 
                 jumpButton.removeEventListener('touchstart', handleJumpStart);
                 jumpButton.removeEventListener('touchend', handleJumpEnd);
@@ -1017,7 +1107,7 @@ function handleShootEnd(e) {
                 shootButton.removeEventListener('touchstart', handleShootStart);
                 shootButton.removeEventListener('touchend', handleShootEnd);
 
-                joystick.removeEventListener('touchmove', preventDefault);
+                
                 jumpButton.removeEventListener('touchmove', preventDefault);
                 shootButton.removeEventListener('touchmove', preventDefault);
             }
@@ -1028,57 +1118,68 @@ function handleShootEnd(e) {
             }
             if (window.screen.orientation && window.screen.orientation.unlock) {
                 window.screen.orientation.unlock();
-              }
+            }
         };
     }, [])
-     // Funciones para pantalla completa y orientación
-  function requestFullScreen() {
-    const elem = document.documentElement;
+    // Funciones para pantalla completa y orientación
+    function requestFullScreen() {
+        const elem = document.documentElement;
 
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen().then(() => {
-        lockOrientation();
-        setIsFullScreen(true);
-      });
-    } else if (elem.webkitRequestFullscreen) { /* Safari */
-      elem.webkitRequestFullscreen();
-      lockOrientation();
-      setIsFullScreen(true);
-    } else if (elem.msRequestFullscreen) { /* IE11 */
-      elem.msRequestFullscreen();
-      lockOrientation();
-      setIsFullScreen(true);
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen().then(() => {
+                lockOrientation();
+                setIsFullScreen(true);
+            }).catch((err) => {
+                console.error('Error al entrar en pantalla completa:', err);
+            });
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+            lockOrientation();
+            setIsFullScreen(true);
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+            lockOrientation();
+            setIsFullScreen(true);
+        } else {
+            alert('Tu navegador no soporta pantalla completa.');
+        }
     }
-  }
 
-  function lockOrientation() {
-    if (window.screen.orientation && window.screen.orientation.lock) {
-        window.screen.orientation.lock('landscape').catch((err) => {
-        console.error('Error al bloquear la orientación:', err);
-      });
-    }
-  }
 
-  function handleOrientationChange() {
-    if (window.screen.orientation.type.startsWith('portrait')) {
-      alert('Por favor, mantén tu dispositivo en modo horizontal para una mejor experiencia.');
+    function lockOrientation() {
+        if (window.screen.orientation && window.screen.orientation.lock) {
+            window.screen.orientation.lock('landscape').catch((err) => {
+                console.error('Error al bloquear la orientación:', err);
+            });
+        }
     }
-  }
 
-  useEffect(() => {
-    if (window.screen.orientation && window.screen.orientation.addEventListener) {
-        window.screen.orientation.addEventListener('change', handleOrientationChange);
+    function handleOrientationChange() {
+        if (window.screen.orientation.type.startsWith('portrait')) {
+            alert('Por favor, mantén tu dispositivo en modo horizontal para una mejor experiencia.');
+        }
     }
-    return () => {
-      if (window.screen.orientation && window.screen.orientation.removeEventListener) {
-        window.screen.orientation.removeEventListener('change', handleOrientationChange);
-      }
-    };
-  }, []);
+
+    useEffect(() => {
+        if (window.screen.orientation && window.screen.orientation.addEventListener) {
+            window.screen.orientation.addEventListener('change', handleOrientationChange);
+        }
+        return () => {
+            if (window.screen.orientation && window.screen.orientation.removeEventListener) {
+                window.screen.orientation.removeEventListener('change', handleOrientationChange);
+            }
+        };
+    }, []);
 
 
     return (
         <div className='center'>
+            {/* Botón para iniciar pantalla completa en móviles */}
+            {isPortrait && (
+                <div className="portrait-overlay">
+                    <p>Por favor, gira tu dispositivo a modo horizontal para jugar.</p>
+                </div>
+            )}
             <div id="despertador">
                 <h2 className='soniquete'>Music</h2>
                 <button className="play">
@@ -1094,18 +1195,17 @@ function handleShootEnd(e) {
                     {/* Tu canvas */}
                 </canvas>
 
-                {/* Controles táctiles solo en dispositivos táctiles */}
-                {isTouchDevice() && (
-                    <div className="touch-controls">
-                        <div className="joystick" id="joystick">
-                            {/* Área del joystick */}
-                        </div>
-                        <div className="buttons">
-                            <button className="jump-button" id="jump-button">Saltar</button>
-                            <button className="shoot-button" id="shoot-button">Disparar</button>
-                        </div>
+
+                <div className="touch-controls">
+                    <div className="joystick-base" id="joystick">
+                        <div className="joystick-shaft"></div>
                     </div>
-                )}
+                    <div className="buttons">
+                        <button className="jump-button" id="jump-button">A</button>
+                        <button className="shoot-button" id="shoot-button">B</button>
+                    </div>
+                </div>
+
             </div>
         </div>
     );
