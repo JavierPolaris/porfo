@@ -15,6 +15,41 @@ body {
   gap: 5%;
   z-index: 9999;
 }
+/* Estilos para el botón 'Aquí' */
+.touch-here {
+  background: none;
+  border: none;
+  color: #ffbc00;
+  cursor: pointer;
+  text-decoration: underline;
+  display: inline; /* Asegura que el botón esté en línea */
+  padding: 0; /* Elimina el padding extra */
+  margin: 0; /* Elimina el margen extra */
+
+}
+
+/* Estilos para el botón de "Cerrar" (la 'X') */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  color: rgb(248, 255, 0);
+  font-family: "Press Start 2P", cursive;
+  font-size: 17.2px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .spaceBar1 {
+    font-size: 14px;
+  }
+
+  .close-button {
+    font-size: 30px; /* Aumentar tamaño en pantallas pequeñas */
+  }
+}
+
 @media only screen and (max-width: 768px) {
   .portrait-overlay {
     position: fixed;
@@ -119,11 +154,13 @@ body {
 .about-page {
   display: flex;
   width: 100%;
+  min-height: 100vh; /* Asegura que ocupe al menos el 100% de la altura de la ventana */
   background-image: url('../assets/img/backA.gif');
   background-size: cover;
   background-position: center;
   flex-direction: column;
   align-items: center;
+  justify-content: center; /* Centrar el contenido verticalmente */
 }
 
 
@@ -152,6 +189,14 @@ body {
   background-color: rgba(120, 120, 120, 0.5);
   color: #ffbc00;
   width: 50%;
+  max-height: 600px; /* Limitar la altura máxima */
+  overflow-y: auto; /* Habilitar el scroll vertical */
+  padding: 10px; /* Espacio interior */
+}
+@media (max-width: 1440px) {
+  .aboutMe {
+  max-height: 400px;
+  }
 }
 @media (max-width: 768px) {
   .contenedorAbo {
@@ -168,6 +213,8 @@ body {
     font-size: 14px;
     line-height: 1.6;
     padding: 2%; /* Reducir el padding para pantallas pequeñas */
+    max-height: 300px; /* Ajustar la altura máxima en móviles */
+    overflow-y: auto; /* Asegurar el scroll en pantallas pequeñas */
   }
 }
 
@@ -1103,16 +1150,19 @@ iframe {
 }
 
 .cabecera {
-  padding-block-start: 5%;
-  color: rgb(248 255 0);
-  font-family: "Press Start 2P", cursive;
-  font-size: 17.2px;
+  margin-top: 50px;
+ 
+  padding: 0; /* Elimina el padding */
+  text-align: center; /* Asegura que el texto esté centrado horizontalmente */
+  width: 100%; /* Asegura que ocupe todo el ancho del contenedor */
+  color: rgb(248, 255, 0); /* Mantiene el color del texto */
+  font-family: "Press Start 2P", cursive; /* Mantiene la fuente */
+  font-size: 17.2px; /* Mantiene el tamaño del texto */
+  display: flex; /* Cambia el display a flex para mayor control */
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
 }
-@media (max-width: 768px) {
-  .cabecera {
-    padding: 5% 0 0 12%;
-  }
-}
+
 
 .cabecera1 {
   color: rgb(248 255 0);

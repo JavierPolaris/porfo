@@ -21,31 +21,19 @@ export default function About() {
             }
         }
 
-        function handleTouchStart() {
-            window.location.href = "/juego";
-        }
-
+        // Elimina el event listener de touchstart global
         document.body.addEventListener('keyup', handleKeyUp);
-
-        if (isTouchDevice) {
-            document.body.addEventListener('touchstart', handleTouchStart);
-        }
 
         return () => {
             document.body.removeEventListener('keyup', handleKeyUp);
-
-            if (isTouchDevice) {
-                document.body.removeEventListener('touchstart', handleTouchStart);
-            }
         };
-    }, [isTouchDevice]);
+    }, []);
 
     return (
-
-
-
         <div className='about-page'>
-
+            <div className="close-button" onClick={() => window.location.href = "/home"}>
+                x {/* El símbolo "X" */}
+            </div>
             <h1 className='cabecera'>
                 Mi nombre es Javier García-Rojo Cantón
             </h1>
@@ -54,7 +42,6 @@ export default function About() {
                 <div className='yoMis'>
                     <img src={Yo} className='yo' alt="Yo" />
                     <div className='rrss'>
-                        
                         <a href="https://www.linkedin.com/in/javierg-rcanton/" target="_blank" rel="noopener noreferrer">
                             <button className='social-button'>
                                 <img src={Lk} alt="LinkedIn" />
@@ -74,23 +61,25 @@ export default function About() {
                             </>
                         ) : (
                             <>
-                                Toca la pantalla para volver a jugar o "Esc" para volver
+                                Toca <button className="touch-here" onClick={() => window.location.href = "/juego"}>Aquí</button> para volver a jugar
                             </>
                         )}
                     </h1>
                 </div>
 
                 <div className='aboutMe'>
-
                     <p className='parrafo'>
-                        Desde hace años llevo formándome en el mundo audiovisual y de diseño, me apasiona llevar mis ideas a otro nivel, tanto es así que llevo dos años formándome como desarrollador FULLSTACK DEVELOPER mezclando mis dos pasiones: el diseño y las aplicaciones web.
-                        Actualmente he terminado un Bootcamp en "The Bridge". El BootCamp de Full Stack Developer es un curso/master intensivo de 4 meses donde se está continuamente practicando con las tecnologías que se utilizan en las empresas, y está orientado a la empleabilidad, haciendo de vehículo conductor de lo aprendido con los futuros trabajos.
-                    </p>
 
+                        Aquí tienes la biografía actualizada con la nueva frase al final:
+
+                        Actualmente, soy el desarrollador web full stack en Silbon, una empresa de moda donde llevo casi 2 años. En mi rol, me encargo de tareas que van desde el front-end hasta la implementación de datalyers y la creación de aplicaciones para optimizar diferentes procesos de la compañía.
+
+                        Antes de unirme a Silbon, trabajé como desarrollador front-end en otra empresa, lo que me permitió consolidar mi experiencia en el campo. Mi recorrido en el mundo del desarrollo comenzó al inicio de la pandemia, cuando decidí formarme intensamente en el sector tecnológico. Este impulso me llevó a completar un Bootcamp en "The Bridge", donde me especialicé en Full Stack Development. El curso fue un intensivo de 4 meses en el que practiqué las tecnologías más demandadas en el mercado laboral.
+
+                        Cada día me siento más preparado, sigo formándome desde mi puesto de trabajo, y me apasionan los retos que se presentan.
+                    </p>
                 </div>
             </div>
-
         </div>
-
     );
 }
