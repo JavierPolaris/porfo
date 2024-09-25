@@ -5,6 +5,49 @@ $easeInOutQuad: cubic-bezier(0.455, 0.030, 0.515, 0.955);
 body {
   background-color: black;
 }
+@media only screen and (max-width: 768px) {
+  .touch-controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) rotate(90deg);
+      display: flex;
+      justify-content: space-between;
+      width: 100vw;
+      padding: 0 20px;
+      z-index: 2;
+  }
+
+  .joystick,
+  .jump-button,
+  .shoot-button {
+      transform: rotate(90deg); /* Revertir la rotación de los controles */
+  }
+
+  .joystick {
+      width: 80px;
+      height: 80px;
+      background: rgba(128, 128, 128, 0.5);
+      border-radius: 50%;
+  }
+
+  .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+  }
+
+  .jump-button,
+  .shoot-button {
+      width: 60px;
+      height: 60px;
+      background: rgba(128, 128, 128, 0.5);
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      color: white;
+  }
+}
 
 
   .spaceBar1 {
@@ -478,11 +521,7 @@ body {
   left: 212px;
     top: 13px;
 }
-canvas {
-  width: 488px !important;
-  margin-top: 0 !important;
- 
-}
+
 }
 
 @media screen and (max-width: 768px) {
@@ -1098,12 +1137,42 @@ iframe {
 
 }
 
-canvas {
-  width: 827px;
-  position: absolute;
-  margin-top: 18px;
-  border-radius: 27px;
+/* Estilos generales para desktop */
+.canvas-container {
+  position: relative;
+  width: 800px; /* Ancho del canvas en desktop */
+  height: 600px; /* Alto del canvas en desktop */
 }
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Estilos para dispositivos móviles */
+@media only screen and (max-width: 768px) {
+  .canvas-container {
+      position: relative;
+      width: 100vh; /* Ancho ajustado para la rotación */
+      height: 100vw; /* Alto ajustado para la rotación */
+      transform: rotate(-90deg);
+      transform-origin: center center;
+      overflow: hidden;
+  }
+
+  canvas {
+      width: 100vh;
+      height: 100vw;
+  }
+
+  /* Ajustar la posición del canvas si es necesario */
+  body {
+      overflow: hidden;
+  }
+}
+
+
 
 /* Comienzo del nadVar */
 

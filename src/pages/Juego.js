@@ -1,26 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Suelo from '../assets/img/suelo1.png';
-import Lemming from '../assets/img/lemming.gif'
-import Captus from '../assets/img/yo.png'
-import YoLeft from '../assets/img/yoLeft.png'
-import Piper from '../assets/img/piper.png'
-import PiperS from '../assets/img/piperS.png'
-import Pina from '../assets/img/piña.png'
-import Lava from '../assets/img/lava.png'
-import SGruta from '../assets/img/sueloC.png'
-import Fondo from '../assets/img/fondo.png'
+import Lemming from '../assets/img/lemming.gif';
+import Captus from '../assets/img/yo.png';
+import YoLeft from '../assets/img/yoLeft.png';
+import Piper from '../assets/img/piper.png';
+import PiperS from '../assets/img/piperS.png';
+import Pina from '../assets/img/piña.png';
+import Lava from '../assets/img/lava.png';
+import SGruta from '../assets/img/sueloC.png';
+import Fondo from '../assets/img/fondo.png';
 import Play from '../assets/img/play.png';
 import Stop from '../assets/img/stop.png';
 import Musica from '../assets/music/musica.mp3';
-import Back from '../assets/img/back.png';
-
-
-
-
 
 export default function Juego() {
+    const touchLeft = useRef(false);
+    const touchRight = useRef(false);
+    const touchJump = useRef(false);
+    const touchShoot = useRef(false);
+    const [isFullScreen, setIsFullScreen] = useState(false);
+    const canvasRef = useRef(null);
+
+    // Función para detectar si es dispositivo táctil
+    const isTouchDevice = () => {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    };
 
     useEffect(() => {
+
+
         //Musica
         document.querySelector(".stop").addEventListener("click", callar);
         document.querySelector(".play").addEventListener("click", sonar);
@@ -43,41 +51,31 @@ export default function Juego() {
             }
         }
 
-        //aseguramos que solo inicializamos el ciclo de actualización una vez
-        var gameStarted = false;
+        // Aseguramos que solo inicializamos el ciclo de actualización una vez
+        let requestId;
 
-        //animation frames
+        // Animation frames
         (function () {
             var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
             window.requestAnimationFrame = requestAnimationFrame;
         })();
 
-        //globales
-        var canvas,
-            f_img,
-            yo2,
-            fondo,
-            pizaS,
-            sSuelo,
-            suelo,
-            lava,
-            pina,
-            piper,
-            image,
+        // Variables globales
+        let canvas,
             ctx,
             width,
-            status,
             height,
+            status,
             player,
             mrPeperoni,
             mrPeperoniS,
             mrPeperoni1,
             mrPeperoni2,
             mrPeperoni3,
-            keys,
-            terrain,
-            bumpers,
-            evil,
+            keys = [],
+            terrain = [],
+            bumpers = [],
+            evil = [],
             bullet,
             evilBullet,
             friction,
@@ -86,7 +84,16 @@ export default function Juego() {
             enemy2,
             enemy3,
             sniper,
-            hellfire;
+            hellfire,
+            image,
+            piper,
+            pina,
+            lava,
+            suelo,
+            sSuelo,
+            fondo,
+            pizaS,
+            yo2;
 
         //función de reinicio para configurar/restablecer globales
         function reset() {
@@ -117,8 +124,11 @@ export default function Juego() {
             ctx = canvas.getContext("2d");
 
 
-            piper = document.querySelector('.piper');
-            pina = document.querySelector('.pina');
+            piper = new Image();
+            piper.src = Piper;
+        
+            pina = new Image();
+            pina.src = Pina;
             width = 800;
             status = 'playing';
             height = 600;
@@ -417,34 +427,76 @@ export default function Juego() {
 
         reset();
 
-        //bucle de juego principal
+        // Controles táctiles
+        if (isTouchDevice()) {
+                // Si es dispositivo táctil, solicitamos pantalla completa y bloqueamos orientación
+    if (isTouchDevice()) {
+        // Solo si ya estamos en pantalla completa
+        if (document.fullscreenElement) {
+          lockOrientation();
+        }
+      }
+
+
+
+            // Inicializar controles táctiles
+            const joystick = document.getElementById('joystick');
+            const jumpButton = document.getElementById('jump-button');
+            const shootButton = document.getElementById('shoot-button');
+
+            // Agregar event listeners para controles táctiles
+            joystick.addEventListener('touchstart', handleJoystickStart, { passive: false });
+            joystick.addEventListener('touchmove', handleJoystickMove, { passive: false });
+            joystick.addEventListener('touchend', handleJoystickEnd, { passive: false });
+
+            jumpButton.addEventListener('touchstart', handleJumpStart, { passive: false });
+            jumpButton.addEventListener('touchend', handleJumpEnd, { passive: false });
+
+            shootButton.addEventListener('touchstart', handleShootStart, { passive: false });
+            shootButton.addEventListener('touchend', handleShootEnd, { passive: false });
+
+            // Prevenir scroll en táctil
+            joystick.addEventListener('touchmove', preventDefault, { passive: false });
+            jumpButton.addEventListener('touchmove', preventDefault, { passive: false });
+            shootButton.addEventListener('touchmove', preventDefault, { passive: false });
+        }
+
+        // Manejo del teclado (para desktop)
+        function keyDownHandler(e) {
+            keys[e.keyCode] = true;
+        }
+
+        function keyUpHandler(e) {
+            keys[e.keyCode] = false;
+        }
+
+        document.body.addEventListener("keydown", keyDownHandler);
+        document.body.addEventListener("keyup", keyUpHandler);
+
+        // Bucle de juego principal
         function update() {
-            // verificar la entrada del jugador
-            if (keys[38] || keys[87]) {
-                // flecha arriba
+            // Aquí va toda la lógica del juego
+            // Verificar la entrada del jugador
+            if (keys[38] || keys[87] || touchJump.current) {
                 if (!player.jumping && player.grounded) {
                     player.jumping = true;
                     player.grounded = false;
                     player.velY = -player.speed * 2;
                 }
             }
-            if (keys[39] || keys[68]) {
-                // flecha derecha
+            if (keys[39] || keys[68] || touchRight.current) {
                 player.facing = "right";
                 if (player.velX < player.speed) {
                     player.velX++;
                 }
-
             }
-            if (keys[37] || keys[65]) {
-                // flecha izquierda
+            if (keys[37] || keys[65] || touchLeft.current) {
                 if (player.velX > -player.speed) {
                     player.velX--;
                 }
                 player.facing = "left";
             }
-            if (keys[32]) {
-                // espacio
+            if (keys[32] || touchShoot.current) {
                 if (status === 'win') {
                     reset();
                 } else if (player.shot === false) {
@@ -453,7 +505,6 @@ export default function Juego() {
                     bullet.x = player.x + 30;
                     bullet.y = player.y + 10;
                 }
-
             }
 
             if (keys[27]) {
@@ -776,13 +827,6 @@ export default function Juego() {
             //dibujar victoria
             if (status === 'win') {
                 window.location.href = "/about";
-                // ctx.fillStyle = '#000';
-                // ctx.fillRect(0, 0, width, height);
-                // ctx.fillStyle = '#fff';
-                // ctx.font = '20pt Helvetica';
-                // ctx.textAlign = 'center';
-                // ctx.fillText("VICTORY", width / 2, height / 2);
-                // ctx.fillText("Press Space to Retry or Press Esc to return Home", width / 2, height / 2 + 40);
             }
             //dibujar score
             if (status === 'puntos') {
@@ -834,8 +878,69 @@ export default function Juego() {
             }
 
 
-            requestAnimationFrame(update);
+            requestId = requestAnimationFrame(update);
         }
+        update();
+// Funciones de control táctil
+function preventDefault(e) {
+    e.preventDefault();
+}
+
+function handleJoystickStart(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    updateJoystick(touch);
+}
+
+function handleJoystickMove(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    updateJoystick(touch);
+}
+
+function handleJoystickEnd(e) {
+    e.preventDefault();
+    touchLeft.current = false;
+    touchRight.current = false;
+}
+
+function updateJoystick(touch) {
+    const rect = document.getElementById('joystick').getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const deltaX = touch.clientX - centerX;
+
+    if (deltaX < -10) {
+        touchLeft.current = true;
+        touchRight.current = false;
+    } else if (deltaX > 10) {
+        touchLeft.current = false;
+        touchRight.current = true;
+    } else {
+        touchLeft.current = false;
+        touchRight.current = false;
+    }
+}
+
+function handleJumpStart(e) {
+    e.preventDefault();
+    touchJump.current = true;
+}
+
+function handleJumpEnd(e) {
+    e.preventDefault();
+    touchJump.current = false;
+}
+
+function handleShootStart(e) {
+    e.preventDefault();
+    touchShoot.current = true;
+}
+
+function handleShootEnd(e) {
+    e.preventDefault();
+    touchShoot.current = false;
+}
+
 
         //si el jugador es golpeado por los malos, vuelve a aparecer
         function resetPlayer() {
@@ -889,45 +994,119 @@ export default function Juego() {
         });
 
         update();
-    })
 
+        // Cleanup al desmontar
+        return () => {
+            document.body.removeEventListener("keydown", keyDownHandler);
+            document.body.removeEventListener("keyup", keyUpHandler);
+
+            
+            // Remover event listeners táctiles si es necesario
+            if (isTouchDevice()) {
+                const joystick = document.getElementById('joystick');
+                const jumpButton = document.getElementById('jump-button');
+                const shootButton = document.getElementById('shoot-button');
+
+                joystick.removeEventListener('touchstart', handleJoystickStart);
+                joystick.removeEventListener('touchmove', handleJoystickMove);
+                joystick.removeEventListener('touchend', handleJoystickEnd);
+
+                jumpButton.removeEventListener('touchstart', handleJumpStart);
+                jumpButton.removeEventListener('touchend', handleJumpEnd);
+
+                shootButton.removeEventListener('touchstart', handleShootStart);
+                shootButton.removeEventListener('touchend', handleShootEnd);
+
+                joystick.removeEventListener('touchmove', preventDefault);
+                jumpButton.removeEventListener('touchmove', preventDefault);
+                shootButton.removeEventListener('touchmove', preventDefault);
+            }
+
+            // Cancelar animación
+            if (requestId) {
+                cancelAnimationFrame(requestId);
+            }
+            if (window.screen.orientation && window.screen.orientation.unlock) {
+                window.screen.orientation.unlock();
+              }
+        };
+    }, [])
+     // Funciones para pantalla completa y orientación
+  function requestFullScreen() {
+    const elem = document.documentElement;
+
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen().then(() => {
+        lockOrientation();
+        setIsFullScreen(true);
+      });
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+      elem.webkitRequestFullscreen();
+      lockOrientation();
+      setIsFullScreen(true);
+    } else if (elem.msRequestFullscreen) { /* IE11 */
+      elem.msRequestFullscreen();
+      lockOrientation();
+      setIsFullScreen(true);
+    }
+  }
+
+  function lockOrientation() {
+    if (window.screen.orientation && window.screen.orientation.lock) {
+        window.screen.orientation.lock('landscape').catch((err) => {
+        console.error('Error al bloquear la orientación:', err);
+      });
+    }
+  }
+
+  function handleOrientationChange() {
+    if (window.screen.orientation.type.startsWith('portrait')) {
+      alert('Por favor, mantén tu dispositivo en modo horizontal para una mejor experiencia.');
+    }
+  }
+
+  useEffect(() => {
+    if (window.screen.orientation && window.screen.orientation.addEventListener) {
+        window.screen.orientation.addEventListener('change', handleOrientationChange);
+    }
+    return () => {
+      if (window.screen.orientation && window.screen.orientation.removeEventListener) {
+        window.screen.orientation.removeEventListener('change', handleOrientationChange);
+      }
+    };
+  }, []);
 
 
     return (
         <div className='center'>
-          
-
-            <div id="despertador" style={{display:'none'}} >
+            <div id="despertador">
                 <h2 className='soniquete'>Music</h2>
                 <button className="play">
-                    <img src={Play} className='play1' />
+                    <img src={Play} className='play1' alt="Play" />
                 </button>
                 <button className="stop">
-                    <img src={Stop} className='stop1' />
+                    <img src={Stop} className='stop1' alt="Stop" />
                 </button>
-                {/* <iframe src={Musica} className='sonido' autoplay>
-                </iframe> */}
-
-
             </div>
-            <img src={Back} className='back' />
-            <canvas id="canvas" style={{
-                position: "absolute",
-              
-            }}>
-                {/* <div className="lemming--walker" ></div> */}
-                <img src={Lemming} className='lemming' />
-                <img src={Pina} className='pina' />
-                <img src={Piper} className='piper' />
-                <img src={Piper} className='piper1' />
-                <img src={Piper} className='piper2' />
-                <img src={Piper} className='piper3' />
 
-            </canvas>
+            <div className="canvas-container">
+                <canvas id="canvas" ref={canvasRef}>
+                    {/* Tu canvas */}
+                </canvas>
 
-            {/* <div className="score">0</div> */}
-
+                {/* Controles táctiles solo en dispositivos táctiles */}
+                {isTouchDevice() && (
+                    <div className="touch-controls">
+                        <div className="joystick" id="joystick">
+                            {/* Área del joystick */}
+                        </div>
+                        <div className="buttons">
+                            <button className="jump-button" id="jump-button">Saltar</button>
+                            <button className="shoot-button" id="shoot-button">Disparar</button>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
-
-    )
+    );
 }
