@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-$easeInOutQuad: cubic-bezier(0.455, 0.030, 0.515, 0.955);
 
 body {
   background-color: black;
@@ -8,13 +7,268 @@ body {
   padding: 0;
   font-family: 'Poppins', sans-serif;
 }
-#despertador{
-  position: absolute;
-  top: 0;
-  display: flex;
-  gap: 5%;
-  z-index: 9999;
+
+/* Asegurar que el body y html ocupen toda la pantalla */
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
+  font-family: 'Poppins', sans-serif;
 }
+
+/* Contenedor Principal */
+.center {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: black;
+  position: relative;
+}
+
+/* Canvas y su Contenedor */
+.canvas-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Estilos para el Despertador */
+#despertador {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 10px;
+  z-index: 9999;
+  align-items: center;
+}
+
+.soniquete {
+  color: white;
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
+}
+
+.play1, .stop1, .fullscreen-icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* Botón de Pantalla Completa */
+.fullscreen-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.fullscreen-button img {
+  width: 30px;
+  height: 30px;
+}
+
+/* Mensaje para Orientación Vertical */
+.portrait-overlay {
+  display: none; /* Oculto por defecto */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.95);
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+  font-size: 1.5em;
+}
+
+/* Mostrar el overlay solo en orientación vertical */
+@media only screen and (orientation: portrait) {
+  .portrait-overlay {
+    display: flex;
+  }
+}
+
+/* Controles Táctiles */
+.touch-controls {
+  display: none; /* Oculto por defecto */
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+/* Mostrar controles táctiles solo en orientación horizontal y dispositivos táctiles */
+@media only screen and (orientation: landscape) and (max-width: 1024px) {
+  .touch-controls {
+    display: flex;
+  }
+}
+
+/* Estilos de la Palanca de Mando (Joystick) */
+.joystick-base {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 10px solid rgba(0, 136, 204, 0.1);
+  background: rgba(0, 136, 204, 0.05);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) inset,
+              0 0 5px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.3s;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  position: relative;
+}
+
+.joystick-base:hover,
+.joystick-base.active {
+  border-color: rgba(0, 136, 204, 0.2);
+}
+
+.joystick-base:hover .joystick-shaft,
+.joystick-base.active .joystick-shaft {
+  background: rgba(0, 136, 204, 0.35);
+}
+
+.joystick-base.active {
+  background: rgba(0, 136, 204, 0.1);
+}
+
+.joystick-shaft {
+  position: absolute;
+  top: calc(50% - 32px);
+  left: calc(50% - 32px);
+  height: 64px;
+  width: 64px;
+  border-radius: 50%;
+  background: rgba(0, 136, 204, 0.25);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.7) inset;
+  transition: background 0.3s;
+  will-change: transform;
+  touch-action: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
+
+/* Botones de Acción */
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.jump-button,
+.shoot-button {
+  width: 60px;
+  height: 60px;
+  border: 10px solid rgba(0, 136, 204, 0.1);
+  background: rgba(0, 136, 204, 0.05);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) inset,
+              0 0 5px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.3s;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  border-radius: 50%;
+  color: white;
+  font-size: 1.5em;
+}
+
+.jump-button:active,
+.shoot-button:active {
+  border-color: rgba(0, 136, 204, 0.2);
+}
+
+/* Prevenir la Selección de Texto en Controles Táctiles */
+.touch-controls, .touch-controls * {
+  user-select: none;
+}
+
+/* Otros Estilos Generales */
+.spaceBar1 {
+  color: white;
+  position: fixed;
+  top: 44%;
+  font-family: "Press Start 2P", cursive;
+  font-size: 15px;
+  animation: taadaa 1.5s infinite;
+}
+
+@keyframes taadaa {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .spaceBar1 {
+    font-size: 14px;
+    padding: 5%;
+  }
+}
+
+@media (max-width: 425px) {
+  .spaceBar1 {
+    top: 16%;
+    font-size: 5px;
+  }
+}
+
+/* Asegurar que los botones solo aparezcan en horizontal y dispositivos táctiles */
+@media only screen and (orientation: portrait) {
+  .touch-controls {
+    display: none !important;
+  }
+}
+
+/* Ocultar controles en pantallas grandes (Desktop) */
+@media (min-width: 1025px) {
+  .touch-controls {
+    display: none !important;
+  }
+}
+
+.about-page {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background-image: url('../assets/img/backA.gif');
+  background-size: cover;
+  background-position: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+
+
+
+
+
 /* Estilos para el botón 'Aquí' */
 .touch-here {
   background: none;
@@ -41,32 +295,15 @@ body {
 }
 
 @media (max-width: 768px) {
-  .spaceBar1 {
-    font-size: 14px;
-  }
+
 
   .close-button {
     font-size: 30px; /* Aumentar tamaño en pantallas pequeñas */
   }
 }
 
+
 @media only screen and (max-width: 768px) {
-  .portrait-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.95);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    z-index: 1000;
-    padding: 20px;
-    box-sizing: border-box;
-}
 
  
 
@@ -74,72 +311,15 @@ body {
       transform: rotate(90deg); /* Revertir la rotación de los controles */
   }
 
-  .joystick-base {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    border: 10px solid rgba(0, 136, 204, 0.1); /* #08c -> rgba(0, 136, 204, 0.1) */
-    background: rgba(0, 136, 204, 0.05);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) inset,
-                0 0 5px rgba(0, 0, 0, 0.2);
-    transition: border-color 0.3s;
-    cursor: pointer;
-    touch-action: none;
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-    position: relative; /* Para posicionar correctamente la shaft */
-}
-
-.joystick-base:hover,
-.joystick-base.active {
-    border-color: rgba(0, 136, 204, 0.2);
-}
-
-.joystick-base:hover .joystick-shaft,
-.joystick-base.active .joystick-shaft {
-    background: rgba(0, 136, 204, 0.35);
-}
-
-.joystick-base.active {
-    background: rgba(0, 136, 204, 0.1);
-}
-
-.joystick-shaft {
-    position: absolute;
-    top: calc(50% - 32px);
-    left: calc(50% - 32px);
-    height: 64px;
-    width: 64px;
-    border-radius: 50%;
-    background: rgba(0, 136, 204, 0.25);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.7) inset;
-    transition: background 0.3s;
-    will-change: transform;
-    touch-action: none;
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-}
+ 
 
 
-  .buttons {
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
-      padding-inline-end: 7%;
-  }
 
-  .jump-button,
-  .shoot-button {
-      width: 60px;
-      height: 60px;
-      border: 10px solid rgba(0, 136, 204, 0.1);
-      background: rgba(0, 136, 204, 0.05);
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) inset, 0 0 5px rgba(0, 0, 0, 0.2);
-      transition: border-color 0.3s;
-      cursor: pointer;
-      touch-action: none;
-      -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-      border-radius: 50%;
-      color: white;
-}
+
+
+ 
+
+ 
 }
 .about-page {
   display: flex;
@@ -208,13 +388,8 @@ body {
   }
 }
 
-  .center {
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    flex-direction: column-reverse;
-    align-items: center;
-}
+
+
   .contactImg1 {
     font-size: 2rem;
     font-family: "Press Start 2P", cursive;
@@ -1073,8 +1248,7 @@ body {
 
 
 
-.play1,
-.stop1,
+
 .play,
 .stop {
   width: 13px;
@@ -1083,19 +1257,7 @@ body {
   margin-left: 10px;
 }
 
-.play,
-.play1 {
-  // position: absolute;
-  // top: 5px;
-  // left: 220px;
-}
 
-.stop,
-.stop1 {
-  // position: absolute;
-  // top: 7px;
-  // left: 231px;
-}
 
 iframe {
   display: none;
@@ -1110,18 +1272,7 @@ iframe {
   font-size: 12px;
 }
 
-.spaceBar1 {
-  color: white;
-  font-family: "Press Start 2P", cursive;
-  font-size: 15px;
-  animation: taadaa 1.5s infinite;
-}
-@media (max-width: 768px) {
-  .spaceBar1 {
-    font-size: 12px; /* Reducir el tamaño en pantallas pequeñas */
-    padding: 5%;
-  }
-}
+
 
 
 
@@ -1205,115 +1356,22 @@ iframe {
 
 }
 
-/* Estilos generales para desktop */
-.canvas-container {
-  position: relative;
-  width: 800px; /* Ancho del canvas en desktop */
-  height: 600px; /* Alto del canvas en desktop */
-}
 
-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
+
+
 
 /* Estilos para dispositivos móviles en orientación horizontal */
 @media only screen and (orientation: landscape) {
-  .touch-controls {
-    position: absolute;
-    bottom: 35px;
-    left: 0;
-   
-    display: flex;
-    justify-content: space-between;
-    width: 100vw;
-    padding: 0 20px;
-    z-index: 2;
-}
-.joystick {
-  transform: rotate(90deg); /* Revertir la rotación de los controles */
-}
-
-.joystick-base {
-width: 80px;
-height: 80px;
-border-radius: 50%;
-border: 10px solid rgba(0, 136, 204, 0.1); /* #08c -> rgba(0, 136, 204, 0.1) */
-background: rgba(0, 136, 204, 0.05);
-box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) inset,
-            0 0 5px rgba(0, 0, 0, 0.2);
-transition: border-color 0.3s;
-cursor: pointer;
-touch-action: none;
--webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-position: relative; /* Para posicionar correctamente la shaft */
-}
-
-.joystick-base:hover,
-.joystick-base.active {
-border-color: rgba(0, 136, 204, 0.2);
-}
-
-.joystick-base:hover .joystick-shaft,
-.joystick-base.active .joystick-shaft {
-background: rgba(0, 136, 204, 0.35);
-}
-
-.joystick-base.active {
-background: rgba(0, 136, 204, 0.1);
-}
-
-.joystick-shaft {
-position: absolute;
-top: calc(50% - 32px);
-left: calc(50% - 32px);
-height: 64px;
-width: 64px;
-border-radius: 50%;
-background: rgba(0, 136, 204, 0.25);
-box-shadow: 0 0 5px rgba(0, 0, 0, 0.7) inset;
-transition: background 0.3s;
-will-change: transform;
-touch-action: none;
--webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-}
 
 
-.buttons {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  padding-inline-end: 7%;
-}
 
-.jump-button,
-.shoot-button {
-  width: 60px;
-  height: 60px;
-  border: 10px solid rgba(0, 136, 204, 0.1);
-  background: rgba(0, 136, 204, 0.05);
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) inset, 0 0 5px rgba(0, 0, 0, 0.2);
-  transition: border-color 0.3s;
-  cursor: pointer;
-  touch-action: none;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-  border-radius: 50%;
-  color: white;
-}
-  .canvas-container {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-  }
 
-  canvas {
-      display: block;
-  }
+
+
+
+
+
+
 
   body {
       margin: 0;

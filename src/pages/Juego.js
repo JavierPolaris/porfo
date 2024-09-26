@@ -12,6 +12,7 @@ import Fondo from '../assets/img/fondo.png';
 import Play from '../assets/img/play.png';
 import Stop from '../assets/img/stop.png';
 import Musica from '../assets/music/musica.mp3';
+import Pantalla from '../assets/img/fullscreen.png';
 
 export default function Juego() {
     const touchLeft = useRef(false);
@@ -21,11 +22,51 @@ export default function Juego() {
     const [isFullScreen, setIsFullScreen] = useState(false);
     const canvasRef = useRef(null);
     const [isPortrait, setIsPortrait] = useState(false);
+    const audioRef = useRef(null);
+
+
     // Función para detectar si es dispositivo táctil
     const isTouchDevice = () => {
         return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     };
-    useEffect(() => {
+ // Función para alternar pantalla completa
+ const toggleFullScreen = () => {
+    const elem = document.documentElement;
+
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        // Solicitar pantalla completa
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen().then(() => {
+                lockOrientation();
+                setIsFullScreen(true);
+            }).catch((err) => {
+                console.error('Error al entrar en pantalla completa:', err);
+            });
+        } else if (elem.webkitRequestFullscreen) { // Safari (iOS)
+            elem.webkitRequestFullscreen(() => {
+                lockOrientation();
+                setIsFullScreen(true);
+            });
+        } else {
+            alert('Tu navegador no soporta pantalla completa.');
+        }
+    } else {
+        // Salir de pantalla completa
+        if (document.exitFullscreen) {
+            document.exitFullscreen().then(() => {
+                setIsFullScreen(false);
+            }).catch((err) => {
+                console.error('Error al salir de pantalla completa:', err);
+            });
+        } else if (document.webkitExitFullscreen) { // Safari (iOS)
+            document.webkitExitFullscreen();
+            setIsFullScreen(false);
+        }
+    }
+};
+ 
+     // Manejar orientación
+     useEffect(() => {
         function handleOrientationChange() {
             const isPortrait = window.matchMedia("(orientation: portrait)").matches;
             setIsPortrait(isPortrait);
@@ -41,30 +82,56 @@ export default function Juego() {
             window.removeEventListener('resize', handleOrientationChange);
         };
     }, []);
+    
+    // Manejo de audio
+    useEffect(() => {
+        audioRef.current = new Audio(Musica);
+        audioRef.current.loop = true;
+        audioRef.current.volume = 0.5;
+
+        const playButton = document.querySelector(".play");
+        const stopButton = document.querySelector(".stop");
+
+        playButton.addEventListener("click", () => {
+            audioRef.current.play();
+        });
+
+        stopButton.addEventListener("click", () => {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+        });
+
+        // Cleanup
+        return () => {
+            playButton.removeEventListener("click", () => { audioRef.current.play(); });
+            stopButton.removeEventListener("click", () => { audioRef.current.pause(); });
+        };
+    }, []);
+ 
+    function lockOrientation() {
+        if (window.screen.orientation && window.screen.orientation.lock) {
+            window.screen.orientation.lock('landscape').catch((err) => {
+                console.error('Error al bloquear la orientación:', err);
+            });
+        }
+    }
+
+    // Manejar eventos de pantalla completa y orientación
+    useEffect(() => {
+        if (window.screen.orientation && window.screen.orientation.addEventListener) {
+            window.screen.orientation.addEventListener('change', handleOrientationChange);
+        }
+        return () => {
+            if (window.screen.orientation && window.screen.orientation.removeEventListener) {
+                window.screen.orientation.removeEventListener('change', handleOrientationChange);
+            }
+        };
+    }, []);
+    
     useEffect(() => {
 
 
-        //Musica
-        document.querySelector(".stop").addEventListener("click", callar);
-        document.querySelector(".play").addEventListener("click", sonar);
-
-
-        function sonar() {
-            var sonido = document.createElement("iframe");
-            sonido.setAttribute("src", Musica);
-            document.body.appendChild(sonido);
-            document.querySelector("play").removeEventListener("click", sonar);
-        }
-
-        function callar() {
-
-            var iframe = document.getElementsByTagName("iframe");
-
-            if (iframe.length > 0) {
-                iframe[0].parentNode.removeChild(iframe[0]);
-                document.querySelector("play").addEventListener("click", sonar);
-            }
-        }
+        
 
         // Aseguramos que solo inicializamos el ciclo de actualización una vez
         let requestId;
@@ -456,14 +523,14 @@ export default function Juego() {
             // Obtener referencias al joystick y su shaft
             const joystickBase = document.getElementById('joystick');
             const joystickShaft = joystickBase.querySelector('.joystick-shaft');
-             // Variables para el movimiento
-             let startX = 0;
-             let startY = 0;
-             let movedX = 0;
-             let movedY = 0;
-             const maxDistance = 30; // Distancia máxima que el joystick puede moverse
+            // Variables para el movimiento
+            let startX = 0;
+            let startY = 0;
+            let movedX = 0;
+            let movedY = 0;
+            const maxDistance = 30; // Distancia máxima que el joystick puede moverse
 
-              // Funciones de manejo del toque
+            // Funciones de manejo del toque
             function handleJoystickStart(e) {
                 e.preventDefault();
                 const touch = e.targetTouches[0];
@@ -522,7 +589,7 @@ export default function Juego() {
                 }
             }
 
-            
+
             // Inicializar controles táctiles
 
             const jumpButton = document.getElementById('jump-button');
@@ -1086,6 +1153,7 @@ export default function Juego() {
 
         // Cleanup al desmontar
         return () => {
+           
             document.body.removeEventListener("keydown", keyDownHandler);
             document.body.removeEventListener("keyup", keyUpHandler);
 
@@ -1107,7 +1175,7 @@ export default function Juego() {
                 shootButton.removeEventListener('touchstart', handleShootStart);
                 shootButton.removeEventListener('touchend', handleShootEnd);
 
-                
+
                 jumpButton.removeEventListener('touchmove', preventDefault);
                 shootButton.removeEventListener('touchmove', preventDefault);
             }
@@ -1121,29 +1189,7 @@ export default function Juego() {
             }
         };
     }, [])
-    // Funciones para pantalla completa y orientación
-    function requestFullScreen() {
-        const elem = document.documentElement;
 
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen().then(() => {
-                lockOrientation();
-                setIsFullScreen(true);
-            }).catch((err) => {
-                console.error('Error al entrar en pantalla completa:', err);
-            });
-        } else if (elem.webkitRequestFullscreen) { /* Safari */
-            elem.webkitRequestFullscreen();
-            lockOrientation();
-            setIsFullScreen(true);
-        } else if (elem.msRequestFullscreen) { /* IE11 */
-            elem.msRequestFullscreen();
-            lockOrientation();
-            setIsFullScreen(true);
-        } else {
-            alert('Tu navegador no soporta pantalla completa.');
-        }
-    }
 
 
     function lockOrientation() {
@@ -1187,6 +1233,9 @@ export default function Juego() {
                 </button>
                 <button className="stop">
                     <img src={Stop} className='stop1' alt="Stop" />
+                </button>
+                <button className="fullscreen-button stop" onClick={toggleFullScreen}>
+                    <img src={Pantalla} className='fullscreen-icon stop1' alt="Full Screen" />
                 </button>
             </div>
 
