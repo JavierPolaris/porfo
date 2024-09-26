@@ -72,11 +72,14 @@ canvas {
   background: none;
   border: none;
   cursor: pointer;
+  display: flex;
+
 }
 
 .fullscreen-button img {
   width: 30px;
   height: 30px;
+  filter: brightness(0) saturate(0%) invert(102%) sepia(0%) saturate(10000%) hue-rotate(174deg);
 }
 
 /* Mensaje para Orientación Vertical */
@@ -127,6 +130,11 @@ canvas {
 .play1, .stop1, .fullscreen-button img {
   width: 12px;
   height: 12px;
+
+}
+.fullscreen-button img {
+  width: 15px;
+  height: 15px;
 
 }
 #despertador {
