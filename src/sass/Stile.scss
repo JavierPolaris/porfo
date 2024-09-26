@@ -50,9 +50,8 @@ canvas {
 #despertador {
   position: absolute;
   top: 10px;
-  left: 10px;
   display: flex;
-  gap: 10px;
+  gap: 34px;
   z-index: 9999;
   align-items: center;
 }
@@ -122,6 +121,19 @@ canvas {
   .touch-controls {
     display: flex;
   }
+  .soniquete {
+    font-size: 8px;
+}
+.play1, .stop1, .fullscreen-button img {
+  width: 12px;
+  height: 12px;
+
+}
+#despertador {
+  top: 0;
+  gap:0;
+  align-items: center;
+}
 }
 
 /* Estilos de la Palanca de Mando (Joystick) */
