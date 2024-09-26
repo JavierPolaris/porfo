@@ -1,0 +1,159 @@
+/* src/components/Navbar.css */
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    height: 60px;
+    background-color: rgb(73 64 104); /* Fondo semitransparente */
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* Sección izquierda del navbar */
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+/* Logo en el navbar */
+.logo {
+    width: 50px;
+    height: auto;
+    margin-right: 10px;
+}
+
+/* Texto en el navbar */
+.textLo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+/* Sección derecha del navbar */
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+/* Botón de Menú Hamburguesa */
+.hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    transition: transform 0.3s ease;
+}
+
+.hamburger.active {
+    transform: rotate(90deg);
+}
+
+.hamburger-line {
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+/* Transformación del botón al estar activo */
+.hamburger.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Menú Desplegable */
+.dropdown-menu {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    background-color: rgb(0 205 176);
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown-menu.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
+
+/* Ajustes Responsivos */
+@media (max-width: 768px) {
+    .textLo {
+        font-size: 20px;
+    }
+
+    .hamburger-line {
+        width: 20px;
+        height: 2px;
+    }
+
+    .dropdown-menu {
+        right: 0;
+        top: 60px;
+        padding: 0;
+        background-color: transparent;
+    }
+
+   
+}
+
+
+/* Estilos para el logo principal y textLo en el contenido */
+.logo-main {
+    width: 91px;
+    height: 110px;
+}
+
+.textLo-main {
+    position: absolute;
+    width: 138px;
+    height: 36px;
+    left: 182px;
+    top: 56px;
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 36px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.27em;
+    color: #FF003D;
+}
+
+
+
+/* Ocultar el menú desplegable cuando no está activo */
+.dropdown-menu {
+    display: none;
+}
+
+.dropdown-menu.open {
+    display: block;
+}

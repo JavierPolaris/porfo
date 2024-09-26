@@ -1,0 +1,147 @@
+/* src/sass/Home.css */
+
+/* Reset de márgenes y paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilos para el cuerpo y html */
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+ 
+  background-color: black;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Contenedor Principal */
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; /* Distribuye el espacio entre el contenido y el footer */
+  min-height: 100vh;
+  padding-top: 60px; /* Igual a la altura del navbar */
+  background-image: url('../assets/img/fondo-retro.webp');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+/* Nombres Principales */
+
+
+.nombre1 {
+  color: #FF2B51;
+  text-align: center;
+  font-size: 31px;
+  font-weight: 800;
+  line-height: 60px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  letter-spacing: 0.055em;
+}
+
+
+
+/* Redes Sociales en el contenido principal */
+.rrssH {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.social {
+  width: 40px;
+  height: 40px;
+}
+
+.imgH {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  filter: brightness(0) saturate(0%) invert(102%) sepia(0%) saturate(10000%) hue-rotate(174deg);
+}
+
+.social:hover .imgH {
+  transform: scale(1.1);
+}
+
+/* Footer */
+.footer {
+  width: 100%;
+  padding: 1rem 2rem;
+  background-color: rgb(65 129 142 / 74%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #FFFFFF;
+}
+
+.footer__left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.footer__right {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  /* Contenedor Principal */
+.home {
+  background-image: url('../assets/img/JAVI.png');
+  background-position: unset;
+}
+.nombre1 {
+  font-size: 14px;
+}
+
+  .rrssH {
+      gap: 0.75rem;
+  }
+
+  .social {
+      width: 35px;
+      height: 35px;
+  }
+  .footer {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+
+}
+
+@media (max-width: 480px) {
+
+
+  .rrssH {
+      gap: 0.5rem;
+  }
+
+  .social {
+      width: 30px;
+      height: 30px;
+  }
+
+  .footer {
+      padding: 0.5rem 1rem;
+  }
+
+  .footer__right {
+      gap: 0.5rem;
+  }
+}
+
+
+

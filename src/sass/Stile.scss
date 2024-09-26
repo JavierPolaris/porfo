@@ -14,7 +14,7 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  
   background-color: black;
   font-family: 'Poppins', sans-serif;
 }
@@ -28,6 +28,7 @@ html, body {
   align-items: center;
   background-color: black;
   position: relative;
+  
 }
 
 /* Canvas y su Contenedor */
@@ -38,6 +39,7 @@ html, body {
   justify-content: center;
   align-items: center;
   position: relative;
+ 
 }
 
 canvas {
@@ -288,7 +290,6 @@ canvas {
 
 
 
-
 /* Estilos para el botón 'Aquí' */
 .touch-here {
   background: none;
@@ -484,39 +485,8 @@ canvas {
   left: 39px;
   z-index: 4;
 }
-.nombre1 {
-  width: 100%;
-  font-family: "Poppins", sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 31px;
-  line-height: 60px;
-  display: flex;
-  text-align: right;
-  letter-spacing: 0.055em;
-  color: #FF2B51;
-  flex-direction: column-reverse;
-  align-items: stretch;
-  margin-top: -613px;
-  margin-left: -43px;
-}
-.nombre2 {
-  width: 100%;
-  font-family: "Poppins", sans-serif;
-  font-weight: 800;
-  font-size: 31px;
-  line-height: 60px;
-  display: flex;
-  text-align: right;
-  letter-spacing: 0.055em;
-  color: #FF2B51;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: -43px;
-  margin-left: -43px;
-  
-}
+
+
 .back {
   height: auto;
   width: 100%;
@@ -1037,80 +1007,11 @@ canvas {
 
 
 
-.home {}
 
-.textLo {
-  position: absolute;
-  width: 138px;
-  height: 36px;
-  left: 182px;
-  top: 56px;
 
-  font-family: 'Poppins', sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 36px;
-  /* identical to box height */
-  display: flex;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.27em;
 
-  color: #FF003D;
-}
 
-.logo {
-  position: absolute;
-  width: 91px;
-  height: 110px;
-  left: 57px;
-  top: 39px;
 
-}
-
-.nombre1 {
-  width: 100%;
-  font-family: "Poppins", sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 31px;
-  line-height: 60px;
-  display: flex;
-  text-align: right;
-  letter-spacing: 0.055em;
-  color: #FF2B51;
-  flex-direction: column-reverse;
-  align-items: stretch;
-  margin-top: -613px;
-  margin-left: -43px;
-}
-
-@media screen and (max-width: 425px) {
-
-  .nombre1,
-  .nombre2 {
-    visibility: hidden;
-
-  }
-}
-
-.nombre2 {
-  width: 100%;
-  font-family: "Poppins", sans-serif;
-  font-weight: 800;
-  font-size: 31px;
-  line-height: 60px;
-  display: flex;
-  text-align: right;
-  letter-spacing: 0.055em;
-  color: #FF2B51;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: -43px;
-  margin-left: -43px;
-}
 
 .botonesMenu {
   position: absolute;
@@ -1123,19 +1024,7 @@ canvas {
   justify-content: flex-end;
 }
 
-.menu {
-  border: none;
-  background: none;
-  font-family: "Poppins", sans-serif;
-  color: white;
-  font-size: 24px;
-  line-height: 132px;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.055em;
-  transform: rotate(90deg);
-}
+
 .imgH1{
   width: 128px;
   
@@ -1395,7 +1284,7 @@ iframe {
 
   body {
       margin: 0;
-      overflow: hidden;
+      
   }
 }
 
@@ -1403,29 +1292,9 @@ iframe {
 
 /* Comienzo del nadVar */
 
-.navbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #cd9d9d;
-  padding: 15px;
 
-}
 
-.navbar a {
-  text-decoration: none;
-  /* color: inherit; */
-  color: white;
 
-}
-
-.logo {
-  margin-right: 50px;
-  font-family: 'Dancing Script', cursive;
-  font-size: 30px;
-
-}
 
 .list {
   list-style: none;

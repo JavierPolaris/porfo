@@ -116,6 +116,17 @@ export default function Juego() {
         }
     }
 
+    // Deshabilitar scroll cuando el componente está montado
+    useEffect(() => {
+        // Al montar, guarda el estilo original y lo modifica
+        const originalStyle = window.getComputedStyle(document.body).overflow;
+        document.body.style.overflow = 'hidden';
+
+        // Al desmontar, restaura el estilo original
+        return () => {
+            document.body.style.overflow = originalStyle;
+        };
+    }, []);
     // Manejar eventos de pantalla completa y orientación
     useEffect(() => {
         if (window.screen.orientation && window.screen.orientation.addEventListener) {

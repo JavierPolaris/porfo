@@ -1,206 +1,103 @@
-import React, { useEffect } from 'react';
+// src/pages/Projects.js
+import React from 'react';
+import Navbar from '../components/Navbar';
+import Cine1 from '../assets/img/porjects/cine1.png';
+import Cuber1 from '../assets/img/porjects/cuber1.png';
+import Deporte from '../assets/img/porjects/deportiva1.png';
+import Personal from '../assets/img/porjects/personal2.png';
+import Ruting from '../assets/img/porjects/ruting4.png';
+import Tripulacion from '../assets/img/porjects/tripulaciones.png';
+import GitIcon from '../assets/img/githab.png';
+import LinkIcon from '../assets/img/Group.png';
+import '../sass/projects.css'; // Asegúrate de tener este archivo en la ruta correcta
 
-import Cabecera from '../components/Cabecera'
-import Rectangulo from '../assets/img/rectangulo.png'
-import Cine1 from '../assets/img/porjects/cine1.png'
-import Cuber1 from '../assets/img/porjects/cuber1.png'
-import Deporte from '../assets/img/porjects/deportiva1.png'
-import Personal from '../assets/img/porjects/personal2.png'
-import Ruting from '../assets/img/porjects/ruting4.png'
-import Tripulacion from '../assets/img/porjects/tripulaciones.png'
-import LogoJavi from '../assets/img/logoJavi.png'
-import Git from '../assets/img/githab.png'
-import Link from '../assets/img/Group.png'
-
-
-
-
-
-
-
-export default function Home() {
-
-
-
-
-
-
-
-
+export default function Projects() {
+    const projectData = [
+        {
+            image: Cine1,
+            title: "Cines Paradiso",
+            description: 'Trabajo realizado en "The Bridge" como parte del Bootcamp de Full Stack Develop. En este caso se trata de una aplicación donde puedes leer info de peliculas, comprar entradas...',
+            techStack: "HTML, JavaScript, CSS",
+            githubLink: "https://github.com/JavierPolaris/Trabajo-Equipo.git",
+            liveLink: null
+        },
+        {
+            image: Cuber1,
+            title: "Cuber",
+            description: 'Trabajo realizado en "The Bridge". Puedes pedir un coche con chofer, te dice el tiempo que tarda en llegar con utilización de mapas y geolocalización.',
+            techStack: "Pug, EJS, CSS, Node.js, MongoDB, MySQL",
+            githubLink: "https://github.com/JavierPolaris/Rol2.git",
+            liveLink: null
+        },
+        {
+            image: Deporte,
+            title: "SPA Sport",
+            description: 'Trabajo realizado en "The Bridge", App para la compra de dorsales en pruebas deportivas, el cliente puede filtrar por comunidades o por deportes y realizar la inscripción.',
+            techStack: "React, Node.js, Sass, Express, Mongoose...",
+            githubLink: "https://github.com/JavierPolaris/Rol3.git",
+            liveLink: null
+        },
+        {
+            image: Personal,
+            title: "Portafolios",
+            description: 'Primer portafolio para entender el funcionamiento de los conceptos básicos de la programación.',
+            techStack: "HTML, CSS, JavaScript",
+            githubLink: "https://github.com/JavierPolaris/Web-Personal.git",
+            liveLink: null
+        },
+        {
+            image: Ruting,
+            title: "Red Social",
+            description: 'Trabajo realizado en "The Bridge". App de red social para ciclistas donde además de trabajar con entradas de texto/img... también muestra la geolocalización de tus contactos.',
+            techStack: "React, Node.js, Sass, MongoDB/MySQL, JWT...",
+            githubLink: "https://github.com/JavierPolaris/RutinBiker",
+            liveLink: "https://enigmatic-plateau-00138.herokuapp.com"
+        },
+        {
+            image: Tripulacion,
+            title: "Emancipatic",
+            description: 'Trabajo realizado en "The Bridge". Trabajo para Emancipatic ayuda a evaluar la accesibilidad las aplicaciones web de empresas...',
+            techStack: "React, Node.js, Sass, MongoDB/MySQL, JWT...",
+            githubLink: "https://github.com/JavierPolaris/Heroku",
+            liveLink: "https://enigmatic-plateau-00138.herokuapp.com"
+        }
+    ];
 
     return (
         <div className='projects'>
-            <Cabecera />
-            <a className='social1' href='/home'><img className='imgH1' src={LogoJavi}/></a>
-            <div className='contenedorPro'>
-                <div className='projectsTex'>
-                    <h1 className='proj1'>Projects</h1>
-                    <p className='proj2'>Things I’ve built so far</p>
+            <Navbar />
+            <div className='projects-container'>
+                <div className='projects-header'>
+                    <h1 className='projects-title'>Projects</h1>
+                    <p className='projects-subtitle'>Things I’ve built so far</p>
                 </div>
-                <div className='targetasP'>
-                    <div className='contRect'>
-                        <div className='contRect1'>
-                            <img src={Cine1} className='proCard' />
-
-                            <div className='proCardText'>
-                                <h1 className='proCardTextH'>
-                                    Cines Paradiso
-                                </h1>
-                                <p className='proCardTexP'>
-                                    Trabajo realizado en "The Bridge" como parte del Bootcamp de Full Stack Develop.En este caso se trata de una aplicación donde puedes leer info de peliculas, comprar entradas...
-                                </p>
-                                <p className='proCardTexT'>
-                                    <b>Tech stack:</b> HTML,JavaScript,CSS
-                                </p>
-                                <div className='proCardW'>
-                                    <img className='proCardG' src={Git} />
-                                    <a className='proCardGL' href='https://github.com/JavierPolaris/Trabajo-Equipo.git'>View Code</a>
-
-
+                <div className='projects-grid'>
+                    {projectData.map((project, index) => (
+                        <div className='project-card' key={index}>
+                            <img src={project.image} alt={project.title} className='project-image' />
+                            <div className='project-content'>
+                                <h2 className='project-title'>{project.title}</h2>
+                                <p className='project-description'>{project.description}</p>
+                                <p className='project-tech'><strong>Tech stack:</strong> {project.techStack}</p>
+                                <div className='project-links'>
+                                    {project.githubLink && (
+                                        <a href={project.githubLink} target="_blank" rel="noopener noreferrer" className='project-link'>
+                                            <img src={GitIcon} alt="GitHub" className='link-icon' />
+                                            View Code
+                                        </a>
+                                    )}
+                                    {project.liveLink && (
+                                        <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className='project-link'>
+                                            <img src={LinkIcon} alt="Live Site" className='link-icon' />
+                                            View Live
+                                        </a>
+                                    )}
                                 </div>
                             </div>
                         </div>
-
-                    </div>
-                    <div className='contRect'>
-                        <div className='contRect1'>
-                            <div className='contenedorImg'>
-                                <img src={Cuber1} className='proCard1' />
-                            </div>
-                            <div className='proCardText'>
-                                <h1 className='proCardTextH'>
-                                    Cuber
-                                </h1>
-                                <p className='proCardTexP'>
-                                    Trabajo realizado en "The Bridge". Puedes pedir un coche con chofer, te dice el tiempo que tarda en llegar con utilización de mapas y geo localización
-                                </p>
-                                <p className='proCardTexTB'>
-                                    <b>Tech stack:</b> Pug,EJS,CSS,Node.js,MongoDB,MySQL,
-                                </p>
-                                <div className='proCardW'>
-                                    <img className='proCardG' src={Git} />
-                                    <a className='proCardGL' href='https://github.com/JavierPolaris/Rol2.git'>View Code</a>
-
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div className='contRect'>
-                        <div className='contRect1'>
-                            <div className='contenedorImg'>
-                                <img src={Deporte} className='proCard2' />
-                            </div>
-                            <div className='proCardText'>
-                                <h1 className='proCardTextH'>
-                                    SPA Sport
-                                </h1>
-                                <p className='proCardTexP'>
-                                    Trabajo realizado en "The Bridge", App para la compra de dorsales en pruebas deportivas, el cliente puede filtrar por comunidades o por deportes y realizar la inscripción.
-                                </p>
-                                <p className='proCardTexTB1'>
-                                    <b>Tech stack:</b> React,Node.js,Sass,Express,Mongoose...
-                                </p>
-                                <div className='proCardW'>
-                                    <img className='proCardG' src={Git} />
-                                    <a className='proCardGL' href='https://github.com/JavierPolaris/Rol3.git'>View Code</a>
-
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div className='contRect'>
-                        <div className='contRect1'>
-                            <div className='contenedorImg'>
-                                <img src={Personal} className='proCard1' />
-                            </div>
-                            <div className='proCardText'>
-                                <h1 className='proCardTextH'>
-                                    Portafolios
-                                </h1>
-                                <p className='proCardTexP'>
-                                    Primer portafolio para entender el funcionamiento de los conceptos básicos de la programación
-                                </p>
-                                <p className='proCardTexT'>
-                                    <b>Tech stack:</b>HTML,Css,JavaScript
-                                </p>
-                                <div className='proCardW'>
-                                    <img className='proCardG' src={Git} />
-                                    <a className='proCardGL' href='https://github.com/JavierPolaris/Web-Personal.git'>View Code</a>
-
-
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div className='contRect'>
-                        <div className='contRect1'>
-                            <div className='contenedorImg'>
-                                <img src={Ruting} className='proCard1' />
-                            </div>
-                            <div className='proCardText'>
-                                <h1 className='proCardTextH'>
-                                    Red Social
-                                </h1>
-                                <p className='proCardTexP'>
-                                    Trabajo realizado en "The Bridge". App de red social para ciclistas donde ademas de trabajar con entradas de texto/img... tambien muestra la geolocalizacion de tus contactos
-                                </p>
-                                <p className='proCardTexT'>
-                                    <b>Tech stack:</b> React,Node.js,Sass,Node.js,<br></br>MongoDB/MySQL,JWT...
-                                </p>
-                                <div className='proCardW1'>
-                                    <img className='proCardG' src={Git} />
-                                    <a className='proCardGL' href='https://github.com/JavierPolaris/RutinBiker'>View Code</a>
-
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div className='contRect'>
-                        <div className='contRect1'>
-                            <div className='contenedorImg'>
-                                <img src={Tripulacion} className='proCard1' />
-                            </div>
-                            <div className='proCardText'>
-                                <h1 className='proCardTextH'>
-                                    Emancipatic
-                                </h1>
-                                <p className='proCardTexP'>
-                                    Trabajo realizado en "The Bridge". Trabajo para Emacipatic ayuda a evaluar la accesibilidad las aplicaciones web de empresas...
-                                </p>
-                                <p className='proCardTexT'>
-                                    <b>Tech stack:</b> React,Node.js,Sass,Node.js,<br></br>MongoDB/MySQL,JWT...
-                                </p>
-                                <div className='links'>
-                                <div className='proCardW2'>
-                                    <img className='proCardG' src={Git} />
-                                    <a className='proCardGL' href='https://github.com/JavierPolaris/Heroku'>View Code</a>
-
-
-                                </div>
-                                <div className='proCardW2'>
-                                    <img className='proCardG1' src={Link} />
-                                    <a className='proCardGL' href='https://enigmatic-plateau-00138.herokuapp.com'>View Code</a>
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                    ))}
                 </div>
             </div>
         </div>
-
-
-        </div >
-
-    )
+    );
 }

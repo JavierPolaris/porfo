@@ -1,0 +1,79 @@
+/* src/components/Cabecera.css */
+
+.cabecera-nav {
+    /* Estilos específicos para Cabecera */
+    position: relative;
+}
+
+.cabecera-ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-wrap: wrap;
+    /* Centrar los elementos */
+    align-items: center;
+    
+}
+
+.cabecera-a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    font-family: 'Poppins', sans-serif;
+    transition: color 0.3s ease;
+}
+
+.cabecera-a:hover {
+    color: #4cf8c5;
+}
+.menu {
+    border: none;
+    background: none;
+    font-family: "Poppins", sans-serif;
+    color: white;
+    font-size: 24px;
+    line-height: 132px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.055em;
+    transform: rotate(90deg);
+    cursor: pointer; /* Añadir cursor pointer para indicar interactividad */
+    transition: transform 0.3s ease, font-size 0.3s ease;
+    
+  }
+
+/* Ajustes Responsivos si es necesario */
+@media (max-width: 768px) {
+    .cabecera-ul {
+        gap: 10px;
+
+    }
+    .menu {
+        font-size: 20px;
+       
+       
+    }
+    .cabecera-nav {
+        border-radius: 8px;
+        background-color: rgb(0 205 176);
+        height: 109vw;
+        overflow-y: auto;
+        max-height: calc(109vh - 90px);
+    }
+    .cabecera-a {
+        font-size: 16px;
+    }
+}
+@media only screen and (orientation: landscape) {
+    .cabecera-nav {
+        border-radius: 8px;
+        background-color: rgb(0 205 176);
+        height: 80vw;
+        overflow-y: auto;
+        max-height: calc(100vh - 80px);
+    }
+
+  }
+  
