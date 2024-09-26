@@ -15,14 +15,14 @@ app.post('/api/send-email', (req, res) => {
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'ktmdemonia@gmail.com',
-      pass: 'Afrotuko1'
+      user: 'javierrojocanton@gmail.com',
+      pass: 'scgu azsg mtsz fitg'
     }
   });
 
   let mailOptions = {
     from: email,
-    to: 'ktmdemonia@gmail.com',
+    to: 'javierrojocanton@gmail.com',
     subject: `Nuevo mensaje de ${nombre}`,
     text: mensaje
   };
