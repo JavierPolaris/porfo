@@ -1,0 +1,213 @@
+.contactM {
+    margin-top: 80px; 
+    width: 100%; 
+    
+}
+.contactoCont {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    max-width: 100vw; /* Asegura que no sobrepase el ancho de la pantalla */
+    overflow-x: hidden; /* Desactiva el scroll horizontal */
+}
+.contactImg {
+    font-size: 5vw;
+    color: #ff9b00;
+    font-family: "Press Start 2P", cursive;
+}
+.imgSwamp {
+    max-width: 100%; /* Asegura que la imagen no supere el ancho de la pantalla */
+    height: auto; /* Mantén la proporción de la imagen */
+}
+.contenedorCont {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.contact {
+    display: flex;
+}
+.cuerpoText {
+    width: 38%;
+    display: flex;
+    color: #ff9b00;
+    font-family: "Press Start 2P", cursive;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.cuerpoText .textContM{
+    font-size: 1.5vw;
+}
+.contact-details{
+   
+    color: gray;
+    font-size: .8rem;
+}
+.contact-links{
+    display: flex;
+    justify-content: space-evenly;
+}
+.form {
+    background-color: rgb(255, 255, 255);
+    width: 22vw;
+    max-width: 100%;
+    border-radius: 8px;
+    padding: 20px 40px;
+    box-shadow: 0 10px 25px rgb(118, 177, 196);
+   }
+
+  
+   .title {
+       font-size: 4vw;
+       margin-bottom: 50px;
+       color: #ff9b00;
+   }
+   .inputContainer {
+    position: relative;
+    height: 45px;
+    width: 90%;
+    margin-bottom: 17px;
+  }
+  
+  .input {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    border: 1px solid #dadce0;
+    border-radius: 7px;
+    font-size: 16px;
+    padding: 0 20px;
+    outline: none;
+    background: none;
+    z-index: 1;
+  }
+  
+  ::placeholder {
+    color: transparent;
+  }
+  
+  .label {
+    
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    padding: 0 4px;
+    background-color: white;
+    font-size: 16px;
+    transition: 0.5s;
+    z-index: 0;
+    color: #ff9b00;
+  
+  }
+  
+  .submitBtn {
+  display: block;
+  margin-left: auto;
+  padding: 15px 30px;
+  border: none;
+  background-color: #ff9b00;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 30px;
+  }
+  
+  .submitBtn:hover {
+    background-color: #9ad441;
+    transform: translateY(-2px);
+  }
+  .input:focus + .label {
+    top: -7px;
+    left: 3px;
+    z-index: 10;
+    font-size: 14px;
+    font-weight: 600;
+    color: gray;
+  }
+  
+  .input:not(:placeholder-shown) + .label {
+    top: -7px;
+    left: 3px;
+    z-index: 10;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  /* Para pantallas entre 1440px y 1024px */
+@media screen and (max-width: 1440px) {
+    .contactImg {
+        font-size: 4rem; /* Reduce el tamaño del texto principal */
+    }
+
+    .cuerpoText {
+        width: 45%; /* Ajusta el ancho del texto */
+    }
+
+    .signupFrm {
+        width: 50%; /* Ajusta el ancho del formulario */
+    }
+
+    .form {
+        width: 340px; /* Reduce ligeramente el ancho del formulario */
+    }
+
+    .contact-details {
+        font-size: 0.75rem; /* Reduce el tamaño del texto de los links */
+    }
+}
+
+/* Para pantallas entre 1024px y 768px */
+@media screen and (max-width: 1024px) {
+    .contactImg {
+        font-size: 3rem; /* Reduce aún más el tamaño del texto principal */
+    }
+
+    .cuerpoText {
+        width: 50%; /* Ajusta el ancho del texto */
+    }
+
+    .signupFrm {
+        width: 100%; /* El formulario ocupa el 100% del ancho */
+        margin-top: 20px; /* Añade espacio entre el texto y el formulario */
+    }
+
+    .form {
+        width: 100%; /* El formulario se adapta al 100% del ancho */
+    }
+}
+
+/* Para pantallas más pequeñas (teléfonos móviles) */
+@media screen and (max-width: 768px) {
+    .contactImg {
+        font-size: 2rem; /* Ajusta el tamaño del texto en pantallas móviles */
+    }
+    .contact{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .contenedorCont {
+        gap: 5vw;
+    }
+    .cuerpoText {
+        width: 100%; /* El texto ocupa todo el ancho en pantallas móviles */
+        text-align: left; /* Centra el texto */
+        gap: 2vw;
+    }
+
+    .signupFrm {
+        width: 100%; /* El formulario ocupa todo el ancho */
+        margin-top: 30px;
+    }
+
+    .contactoCont {
+        flex-direction: column; /* Coloca el formulario y el texto uno debajo del otro */
+        align-items: center;
+    }
+    .imgTop {
+        padding-inline: 5vw;
+    }
+}
