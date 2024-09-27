@@ -243,19 +243,7 @@ canvas {
   }
 }
 
-@media (max-width: 768px) {
-  .spaceBar1 {
-    font-size: 14px;
-    padding: 5%;
-  }
-}
 
-@media (max-width: 425px) {
-  .spaceBar1 {
-    top: 16%;
-    font-size: 5px;
-  }
-}
 
 /* Asegurar que los botones solo aparezcan en horizontal y dispositivos táctiles */
 @media only screen and (orientation: portrait) {
