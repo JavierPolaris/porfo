@@ -21,10 +21,10 @@ app.post('/api/send-email', (req, res) => {
   });
 
   let mailOptions = {
-    from: email,
+    from: `"${nombre}" <${email}>`,
     to: 'javierrojocanton@gmail.com',
     subject: `Nuevo mensaje de ${nombre}`,
-    text: mensaje
+     text: `Nombre: ${nombre}\nCorreo: ${email}\nMensaje: ${mensaje}`
   };
 
 
