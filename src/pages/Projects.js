@@ -7,6 +7,10 @@ import Deporte from '../assets/img/porjects/deportiva1.png';
 import Personal from '../assets/img/porjects/personal2.png';
 import Ruting from '../assets/img/porjects/ruting4.png';
 import Tripulacion from '../assets/img/porjects/tripulaciones.png';
+import Bar from '../assets/img/porjects/bar.png';
+import Silbon from '../assets/img/porjects/Silbon.png';
+import DataLayer from '../assets/img/porjects/dataLayer.png';
+import ModuloSil from '../assets/img/porjects/modulo.png';
 import GitIcon from '../assets/img/githab.png';
 import LinkIcon from '../assets/img/Group.png';
 import '../sass/projects.css'; // Asegúrate de tener este archivo en la ruta correcta
@@ -14,12 +18,52 @@ import '../sass/projects.css'; // Asegúrate de tener este archivo en la ruta co
 export default function Projects() {
     const projectData = [
         {
-            image: Cine1,
-            title: "Cines Paradiso",
-            description: 'Trabajo realizado en "The Bridge" como parte del Bootcamp de Full Stack Develop. En este caso se trata de una aplicación donde puedes leer info de peliculas, comprar entradas...',
-            techStack: "HTML, JavaScript, CSS",
-            githubLink: "https://github.com/JavierPolaris/Trabajo-Equipo.git",
-            liveLink: null
+            image: ModuloSil,
+            title: "Creacíon de modulos de sección",
+            description: 'Creación de nuevos modulos y personalización total de temas en shopify',
+            techStack: "Shopify, Liquid.js, javaScript, Node.js",
+            liveLink: "https://www.silbonshop.com/collections/old-heritage-man"
+            
+        },
+        {
+            image: Silbon,
+            title: "NEW WEB Silbon",
+            description: 'Cambio de Salesforce a Shopify y redefinicion de concepto',
+            techStack: "Shopify, Liquid.js, javaScript, Node.js",
+            liveLink: "https://www.silbonshop.com/"
+            
+        },
+        {
+            image: DataLayer,
+            title: "Medición de eventos",
+            description: 'Creación de eventos para medición, dataLayer  ',
+            techStack: "javaScript",
+            liveLink: "https://www.silbonshop.com/"
+            
+        },
+        {
+            image: Bar,
+            title: "Silbon Bar",
+            description: 'Web del Bar Silbon situado en Córdoba y Madrid',
+            techStack: "WordPress",
+            liveLink: "https://silbonbar.es/"
+            
+        },
+        {
+            image: Tripulacion,
+            title: "Emancipatic",
+            description: 'Trabajo realizado en "The Bridge". Trabajo para Emancipatic ayuda a evaluar la accesibilidad las aplicaciones web de empresas...',
+            techStack: "React, Node.js, Sass, MongoDB/MySQL, JWT...",
+            githubLink: "https://github.com/JavierPolaris/Heroku",
+            liveLink: "https://enigmatic-plateau-00138.herokuapp.com"
+        },
+        {
+            image: Ruting,
+            title: "Red Social",
+            description: 'Trabajo realizado en "The Bridge". App de red social para ciclistas donde además de trabajar con entradas de texto/img... también muestra la geolocalización de tus contactos.',
+            techStack: "React, Node.js, Sass, MongoDB/MySQL, JWT...",
+            githubLink: "https://github.com/JavierPolaris/RutinBiker",
+            liveLink: "https://enigmatic-plateau-00138.herokuapp.com"
         },
         {
             image: Cuber1,
@@ -46,22 +90,15 @@ export default function Projects() {
             liveLink: null
         },
         {
-            image: Ruting,
-            title: "Red Social",
-            description: 'Trabajo realizado en "The Bridge". App de red social para ciclistas donde además de trabajar con entradas de texto/img... también muestra la geolocalización de tus contactos.',
-            techStack: "React, Node.js, Sass, MongoDB/MySQL, JWT...",
-            githubLink: "https://github.com/JavierPolaris/RutinBiker",
-            liveLink: "https://enigmatic-plateau-00138.herokuapp.com"
-        },
-        {
-            image: Tripulacion,
-            title: "Emancipatic",
-            description: 'Trabajo realizado en "The Bridge". Trabajo para Emancipatic ayuda a evaluar la accesibilidad las aplicaciones web de empresas...',
-            techStack: "React, Node.js, Sass, MongoDB/MySQL, JWT...",
-            githubLink: "https://github.com/JavierPolaris/Heroku",
-            liveLink: "https://enigmatic-plateau-00138.herokuapp.com"
+            image: Cine1,
+            title: "Cines Paradiso",
+            description: 'Trabajo realizado en "The Bridge" como parte del Bootcamp de Full Stack Develop. En este caso se trata de una aplicación donde puedes leer info de peliculas, comprar entradas...',
+            techStack: "HTML, JavaScript, CSS",
+            githubLink: "https://github.com/JavierPolaris/Trabajo-Equipo.git",
+            liveLink: null
         }
     ];
+    
 
     return (
         <div className='projects'>
