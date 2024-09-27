@@ -16,6 +16,7 @@
 }
 /* Contenedor Principal */
 .projects-container {
+    background: #00000045;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
