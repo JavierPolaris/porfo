@@ -1,5 +1,5 @@
 // src/pages/Projects.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Cine1 from '../assets/img/porjects/cine1.png';
 import Cuber1 from '../assets/img/porjects/cuber1.png';
@@ -13,9 +13,28 @@ import DataLayer from '../assets/img/porjects/dataLayer.png';
 import ModuloSil from '../assets/img/porjects/modulo.png';
 import GitIcon from '../assets/img/githab.png';
 import LinkIcon from '../assets/img/Group.png';
+import CajaPiza from '../assets/img/cajaPiza.webp';
 import '../sass/projects.css'; // Asegúrate de tener este archivo en la ruta correcta
 
+
+
 export default function Projects() {
+    // Cambiar el color del navbar
+    useEffect(() => {
+        
+        const navbar = document.querySelector('.navbar');
+        if (navbar) {
+            navbar.style.backgroundColor = 'rgb(255, 155, 0)';
+        }
+
+        // Limpiar el estilo al salir de la página de contacto
+        return () => {
+           
+            if (navbar) {
+                navbar.style.backgroundColor = '';
+            }
+        };
+    }, []);
     const projectData = [
         {
             image: ModuloSil,
@@ -105,8 +124,9 @@ export default function Projects() {
             <Navbar />
             <div className='projects-container'>
                 <div className='projects-header'>
-                    <h1 className='projects-title'>Projects</h1>
-                    <p className='projects-subtitle'>Things I’ve built so far</p>
+                <img src={CajaPiza} alt={CajaPiza} className='CajaPiza' />
+                    {/* <h1 className='projects-title'>Projects</h1>
+                    <p className='projects-subtitle'>Things I’ve built so far</p> */}
                 </div>
                 <div className='projects-grid'>
                     {projectData.map((project, index) => (
