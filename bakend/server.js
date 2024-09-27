@@ -4,13 +4,13 @@ const cors = require('cors');
 const app = express();
 
 // Middleware
-app.use(cors()); // Permitir solicitudes desde cualquier origen (útil para conectar con tu frontend)
-app.use(express.json()); // Para analizar el cuerpo de las solicitudes JSON
+app.use(cors());
+app.use(express.json());
 
 // Ruta para enviar correos
 app.post('/api/send-email', (req, res) => {
   const { email, nombre, mensaje } = req.body;
-
+  
   // Configuración de Nodemailer
   let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -27,7 +27,7 @@ app.post('/api/send-email', (req, res) => {
     text: mensaje
   };
 
-  // Enviar el correo
+
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
@@ -39,7 +39,6 @@ app.post('/api/send-email', (req, res) => {
   });
 });
 
-// Iniciar el servidor
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);

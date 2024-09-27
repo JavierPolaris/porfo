@@ -44,7 +44,7 @@ function Contact() {
         e.preventDefault();
 
         // Enviar los datos al backend usando fetch
-        fetch('http://localhost:5000/api/send-email', {
+        fetch('https://porfo-rho.vercel.app/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
