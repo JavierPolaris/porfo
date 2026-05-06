@@ -128,8 +128,6 @@ export default function Juego2() {
             player.velY = 0;
             player.jumping  = false;
             player.grounded = false;
-            // Al reaparecer el salto se puede usar de inmediato (resetea estado)
-            player.jumpWasDown = false;
             if (playerLives <= 0) status = 'gameover';
         }
 
@@ -161,7 +159,6 @@ export default function Juego2() {
                 speed: 3, velX: 0, velY: 0,
                 jumping: false, grounded: false,
                 facing: 'right',
-                jumpWasDown: false,   // edge-detection limpio: ¿estaba pulsado el salto el frame anterior?
             };
 
             boss = {
@@ -250,16 +247,12 @@ export default function Juego2() {
             const ctx = canvas.getContext('2d');
             frameCount++;
 
-            /* ── Salto — exactamente igual que nivel 1 ── */
-            // Edge-detection via jumpWasDown: evita saltar al mantener pulsado,
-            // pero se resetea en loseLife() para que al reaparecer funcione de inmediato.
-            const jumpDown = !!(keys[38] || keys[87] || touchJump.current);
-            if (jumpDown && !player.jumpWasDown && !player.jumping && player.grounded) {
+            /* ── Salto — idéntico a Juego.js nivel 1 ── */
+            if ((keys[38] || keys[87] || touchJump.current) && !player.jumping && player.grounded) {
                 player.jumping  = true;
                 player.grounded = false;
                 player.velY     = -player.speed * 2;
             }
-            player.jumpWasDown = jumpDown;
 
             /* ── Movimiento horizontal ── */
             if (keys[39] || keys[68] || touchRight.current) {
