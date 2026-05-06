@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Captus from '../assets/img/yo.png';
 import YoLeft from '../assets/img/yoLeft.png';
-import Pina from '../assets/img/piña.png';
+import Pina     from '../assets/img/pinaDemoniaca.png';
+import PinaSmall from '../assets/img/pinaSmall.png';
 import Suelo from '../assets/img/suelo1.png';
 import Fondo from '../assets/img/fondo.png';
 import Play from '../assets/img/play.png';
@@ -91,7 +92,7 @@ export default function Juego2() {
         const bossGravity = 0.5;
 
         let status, player, boss, bullet, bossHP, playerLives;
-        let imgYo, imgYoLeft, imgPina, imgSuelo, imgFondo;
+        let imgYo, imgYoLeft, imgPina, imgPinaSmall, imgSuelo, imgFondo;
 
         function isTouchDev() {
             return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -132,11 +133,12 @@ export default function Juego2() {
         }
 
         function reset() {
-            imgYo     = new Image(); imgYo.src     = Captus;
-            imgYoLeft = new Image(); imgYoLeft.src = YoLeft;
-            imgPina   = new Image(); imgPina.src   = Pina;
-            imgSuelo  = new Image(); imgSuelo.src  = Suelo;
-            imgFondo  = new Image(); imgFondo.src  = Fondo;
+            imgYo       = new Image(); imgYo.src       = Captus;
+            imgYoLeft   = new Image(); imgYoLeft.src   = YoLeft;
+            imgPina     = new Image(); imgPina.src     = Pina;
+            imgPinaSmall= new Image(); imgPinaSmall.src= PinaSmall;
+            imgSuelo    = new Image(); imgSuelo.src    = Suelo;
+            imgFondo    = new Image(); imgFondo.src    = Fondo;
 
             const canvas = document.getElementById('canvas');
             canvas.width  = WIDTH;
@@ -489,21 +491,9 @@ export default function Juego2() {
                 ctx.restore();
             });
 
-            /* ── Dibujar balas del boss ── */
+            /* ── Dibujar balas del boss (piñita pequeña) ── */
             bossBullets.forEach(bb => {
-                ctx.save();
-                const grad = ctx.createRadialGradient(
-                    bb.x + bb.width / 2, bb.y + bb.height / 2, 1,
-                    bb.x + bb.width / 2, bb.y + bb.height / 2, bb.width / 2
-                );
-                grad.addColorStop(0, '#ffffff');
-                grad.addColorStop(0.4, '#ff8800');
-                grad.addColorStop(1, 'rgba(255,0,0,0)');
-                ctx.fillStyle = grad;
-                ctx.beginPath();
-                ctx.arc(bb.x + bb.width / 2, bb.y + bb.height / 2, bb.width / 2, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
+                ctx.drawImage(imgPinaSmall, bb.x, bb.y, bb.width, bb.height);
             });
 
             /* ── Dibujar boss ── */
