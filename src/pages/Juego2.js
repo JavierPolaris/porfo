@@ -470,11 +470,18 @@ export default function Juego2() {
                 return sw.ttl > 0;
             });
 
+            /* ── Dibujar suelo principal ── */
+            for (let px = 0; px < WIDTH; px += 50) {
+                ctx.drawImage(imgSuelo, px, FLOOR, 50, 50);
+            }
+            ctx.fillStyle = '#2a1508';
+            ctx.fillRect(0, FLOOR + 50, WIDTH, HEIGHT - FLOOR - 50);
+
             /* ── Dibujar plataformas ── */
             for (let i = 3; i < terrain.length; i++) {
                 const t = terrain[i];
                 for (let px = t.x; px < t.x + t.width; px += 50) {
-                    ctx.drawImage(imgSuelo, px, t.y, Math.min(50, t.x + t.width - px), t.height);
+                    ctx.drawImage(imgSuelo, px, t.y, Math.min(50, t.x + t.width - px), 50);
                 }
             }
 
