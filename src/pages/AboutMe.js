@@ -32,8 +32,8 @@ export default function About() {
                     <div className='about-identity'>
                         <h1 className='about-name'>Javier<br />G-R Cantón</h1>
                         <p className='about-roles'>
-                            Ecommerce Dev · Full Stack<br />
-                            Technical Lead · Product Builder
+                            Platform Digital Lead<br />
+                            Full Stack · Product Builder
                         </p>
                     </div>
 

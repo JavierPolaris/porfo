@@ -16,7 +16,7 @@ export default function Home() {
         <div className='hero'>
           <p className='hero-greeting'>Hola, soy</p>
           <h1 className='hero-name'>Javier G-R Cantón</h1>
-          <p className='hero-title'>Ecommerce · Full Stack · Technical Lead</p>
+          <p className='hero-title'>Platform Digital Lead</p>
           <p className='hero-sub'>
             4 años en <strong>Silbon</strong> evolucionando de desarrollador frontend
             a arquitectura digital, automatización, integraciones y producto propio.
