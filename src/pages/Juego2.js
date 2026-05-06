@@ -189,9 +189,9 @@ export default function Juego2() {
             // 3 plataformas — misma altura que nivel 1 (40px), bien anchas y alcanzables
             // Desde suelo (player.y≈548, pico≈455) → plataformas y=480 alcanzables
             // Desde y=480 (player.y≈430, pico≈337)  → plataforma  y=360 alcanzable
-            terrain.push({ x: 60,  y: 480, width: 200, height: 40 });  // izquierda baja
-            terrain.push({ x: 540, y: 480, width: 200, height: 40 });  // derecha baja
-            terrain.push({ x: 280, y: 360, width: 240, height: 40 });  // centro alta
+            terrain.push({ x: 75,  y: 480, width: 150, height: 40 });  // izquierda baja (3 tiles)
+            terrain.push({ x: 575, y: 480, width: 150, height: 40 });  // derecha baja  (3 tiles)
+            terrain.push({ x: 300, y: 360, width: 200, height: 40 });  // centro alta   (4 tiles)
         }
 
         reset();
@@ -287,9 +287,10 @@ export default function Juego2() {
             for (let i = 0; i < terrain.length; i++) {
                 const dir = colCheck(player, terrain[i]);
                 if (dir === 'l' || dir === 'r') {
-                    player.velX = 0;
+                    player.velX   = 0;
+                    player.jumping = false;
                 } else if (dir === 't') {
-                    player.velY *= -0.3;
+                    player.velY *= -1;
                 } else if (dir === 'b') {
                     player.grounded = true;
                     player.jumping  = false;
