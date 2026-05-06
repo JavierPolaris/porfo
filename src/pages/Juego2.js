@@ -160,7 +160,7 @@ export default function Juego2() {
             player = {
                 x: 60, y: FLOOR - 60,
                 width: 50, height: 50,
-                speed: 3, velX: 0, velY: 0,
+                speed: 4, velX: 0, velY: 0,
                 jumping: false, grounded: false,
                 facing: 'right',
                 canDoubleJump: false,
@@ -582,7 +582,7 @@ export default function Juego2() {
                 ctx.fillText('GAME OVER', WIDTH / 2, HEIGHT / 2 - 30);
                 ctx.fillStyle = '#ffffff';
                 ctx.font      = '12px "Press Start 2P", monospace';
-                ctx.fillText('Pulsa ESPACIO para reintentar', WIDTH / 2, HEIGHT / 2 + 30);
+                ctx.fillText(isTouchDev() ? 'Toca B para reintentar' : 'Pulsa ESPACIO para reintentar', WIDTH / 2, HEIGHT / 2 + 30);
                 ctx.textAlign = 'left';
                 ctx.restore();
                 if (keys[32] || touchShoot.current) {
@@ -611,7 +611,7 @@ export default function Juego2() {
                 if (elapsed > 120) {
                     ctx.fillStyle = '#ffffff';
                     ctx.font      = '11px "Press Start 2P", monospace';
-                    ctx.fillText('Pulsa ESPACIO para continuar', WIDTH / 2, HEIGHT / 2 + 50);
+                    ctx.fillText(isTouchDev() ? 'Toca B para continuar' : 'Pulsa ESPACIO para continuar', WIDTH / 2, HEIGHT / 2 + 50);
                 }
 
                 ctx.textAlign = 'left';
