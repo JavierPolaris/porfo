@@ -15,7 +15,7 @@ const BOSS_MAX_HP     = 8;
 const PLAYER_MAX_LIVES = 3;
 const WIDTH  = 800;
 const HEIGHT = 600;
-const FLOOR  = 460;           // tile de hierba aquí + relleno marrón hasta el fondo
+const FLOOR  = 480;
 
 export default function Juego2() {
     const touchLeft  = useRef(false);
@@ -482,8 +482,7 @@ export default function Juego2() {
             /* ── Dibujar plataformas ── */
             for (let i = 3; i < terrain.length; i++) {
                 const t = terrain[i];
-                for (let px = t.x - 5; px < t.x + t.width; px += 40) ctx.drawImage(imgSuelo,  px, t.y,      50, 50);
-                for (let px = t.x - 5; px < t.x + t.width; px += 40) ctx.drawImage(imgSueloC, px, t.y + 40, 50, 50);
+                for (let px = t.x - 5; px < t.x + t.width; px += 40) ctx.drawImage(imgSuelo, px, t.y, 50, 50);
             }
 
             /* ── Dibujar shockwaves ── */
