@@ -539,37 +539,20 @@ export default function Juego2() {
             if (player.facing === 'right') ctx.drawImage(imgYo,     player.x, player.y, player.width, player.height);
             else                           ctx.drawImage(imgYoLeft, player.x, player.y, player.width, player.height);
 
-            /* ── HUD (siempre encima) ── */
-            ctx.fillStyle = 'rgba(0,0,0,0.72)';
-            ctx.fillRect(0, 0, WIDTH, 46);
-            ctx.fillStyle = '#ff9b00';
-            ctx.fillRect(0, 46, WIDTH, 2);
+            /* ── HUD ── */
+            ctx.font = '30px serif';
 
-            ctx.font = '20px serif';
-
-            // Vidas del jugador — izquierda
+            // Vidas del jugador — arriba izquierda
             for (let h = 0; h < PLAYER_MAX_LIVES; h++) {
-                ctx.fillStyle = h < playerLives ? '#ff2255' : 'rgba(255,255,255,0.12)';
-                ctx.fillText('♥', 20 + h * 26, 34);
+                ctx.fillStyle = h < playerLives ? '#ff2255' : 'rgba(255,255,255,0.18)';
+                ctx.fillText('♥', 16 + h * 36, 42);
             }
 
-            // Vida del boss — centro
-            const heartGap    = 26;
-            const heartStartX = WIDTH / 2 - (BOSS_MAX_HP * heartGap) / 2 + 4;
+            // Vida del boss — arriba derecha, igual que protagonista
             for (let h = 0; h < BOSS_MAX_HP; h++) {
-                ctx.fillStyle = h < bossHP ? '#ffaa00' : 'rgba(255,255,255,0.12)';
-                ctx.fillText('♥', heartStartX + h * heartGap, 34);
+                ctx.fillStyle = h < bossHP ? '#ffaa00' : 'rgba(255,255,255,0.18)';
+                ctx.fillText('♥', WIDTH - 16 - (BOSS_MAX_HP - h) * 36, 42);
             }
-            const barW = 240;
-            const barX = WIDTH / 2 - barW / 2;
-            ctx.fillStyle = 'rgba(0,0,0,0.55)';
-            ctx.fillRect(barX, 8, barW, 10);
-            const pct = bossHP / BOSS_MAX_HP;
-            ctx.fillStyle = pct > 0.5 ? '#22dd44' : pct > 0.25 ? '#ffaa00' : '#ff2200';
-            ctx.fillRect(barX, 8, barW * pct, 10);
-            ctx.strokeStyle = 'rgba(255,255,255,0.22)';
-            ctx.lineWidth   = 1;
-            ctx.strokeRect(barX, 8, barW, 10);
 
             /* ── Game over ── */
             if (status === 'gameover') {
