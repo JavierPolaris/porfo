@@ -38,14 +38,22 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Wrapper que mantiene la proporción 4:3 del juego */
+.game-frame {
   position: relative;
- 
+  aspect-ratio: 4 / 3;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 canvas {
   width: 100%;
   height: 100%;
   display: block;
+  image-rendering: pixelated;
 }
 
 /* Estilos para el Despertador */
@@ -112,115 +120,137 @@ canvas {
 
 /* Controles Táctiles */
 .touch-controls {
-  display: none; /* Oculto por defecto */
+  display: none;
   position: absolute;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
+  bottom: 2%;
+  left: 2%;
+  right: 2%;
   justify-content: space-between;
+  align-items: flex-end;
   z-index: 2;
+  pointer-events: none; /* los hijos activan eventos */
 }
 
-/* Mostrar controles táctiles solo en orientación horizontal y dispositivos táctiles */
+.touch-controls > * {
+  pointer-events: all;
+}
+
+/* Mostrar controles táctiles en landscape en móvil/tablet */
 @media only screen and (orientation: landscape) and (max-width: 1024px) {
   .touch-controls {
     display: flex;
   }
   .soniquete {
     font-size: 8px;
-}
-.play1, .stop1, .fullscreen-button img {
-  width: 12px;
-  height: 12px;
-
-}
-.fullscreen-button img {
-  width: 15px;
-  height: 15px;
-
-}
-#despertador {
-  top: 0;
-  gap:0;
-  align-items: center;
-}
+  }
+  .play1, .stop1, .fullscreen-button img {
+    width: 12px;
+    height: 12px;
+  }
+  .fullscreen-button img {
+    width: 15px;
+    height: 15px;
+  }
+  #despertador {
+    top: 0;
+    gap: 0;
+    align-items: center;
+  }
 }
 
 /* Estilos de la Palanca de Mando (Joystick) */
 .joystick-base {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  border: 10px solid rgba(0, 136, 204, 0.1);
-  background: rgba(0, 136, 204, 0.05);
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) inset,
-              0 0 5px rgba(0, 0, 0, 0.2);
-  transition: border-color 0.3s;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6) inset;
+  transition: border-color 0.2s, background 0.2s;
   cursor: pointer;
   touch-action: none;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-tap-highlight-color: transparent;
   position: relative;
 }
 
-.joystick-base:hover,
 .joystick-base.active {
-  border-color: rgba(0, 136, 204, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.joystick-base:hover .joystick-shaft,
 .joystick-base.active .joystick-shaft {
-  background: rgba(0, 136, 204, 0.35);
-}
-
-.joystick-base.active {
-  background: rgba(0, 136, 204, 0.1);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .joystick-shaft {
   position: absolute;
-  top: calc(50% - 32px);
-  left: calc(50% - 32px);
-  height: 64px;
-  width: 64px;
+  top: calc(50% - 34px);
+  left: calc(50% - 34px);
+  height: 68px;
+  width: 68px;
   border-radius: 50%;
-  background: rgba(0, 136, 204, 0.25);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.7) inset;
-  transition: background 0.3s;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6) inset;
+  transition: background 0.2s;
   will-change: transform;
   touch-action: none;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Botones de Acción */
 .buttons {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 12px;
 }
 
 .jump-button,
 .shoot-button {
-  width: 60px;
-  height: 60px;
-  border: 10px solid rgba(0, 136, 204, 0.1);
-  background: rgba(0, 136, 204, 0.05);
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) inset,
-              0 0 5px rgba(0, 0, 0, 0.2);
-  transition: border-color 0.3s;
+  width: 70px;
+  height: 70px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6) inset;
+  transition: border-color 0.2s, background 0.2s;
   cursor: pointer;
   touch-action: none;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-tap-highlight-color: transparent;
   border-radius: 50%;
-  color: white;
-  font-size: 1.5em;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: "Press Start 2P", cursive;
+  font-size: 0.7em;
 }
 
 .jump-button:active,
 .shoot-button:active {
-  border-color: rgba(0, 136, 204, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
 }
 
-/* Prevenir la Selección de Texto en Controles Táctiles */
+/* Pantallas muy pequeñas en landscape (teléfonos compactos) */
+@media only screen and (orientation: landscape) and (max-height: 400px) {
+  .joystick-base {
+    width: 68px;
+    height: 68px;
+  }
+  .joystick-shaft {
+    width: 50px;
+    height: 50px;
+    top: calc(50% - 25px);
+    left: calc(50% - 25px);
+  }
+  .jump-button,
+  .shoot-button {
+    width: 56px;
+    height: 56px;
+  }
+  .buttons {
+    gap: 8px;
+  }
+}
+
+/* Prevenir selección de texto en controles */
 .touch-controls, .touch-controls * {
   user-select: none;
 }
@@ -228,31 +258,24 @@ canvas {
 /* Otros Estilos Generales */
 .spaceBar1 {
   color: white;
-
   font-family: "Press Start 2P", cursive;
   font-size: 15px;
   animation: taadaa 1.5s infinite;
 }
 
 @keyframes taadaa {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
 }
 
-
-
-/* Asegurar que los botones solo aparezcan en horizontal y dispositivos táctiles */
+/* Ocultar controles en portrait */
 @media only screen and (orientation: portrait) {
   .touch-controls {
     display: none !important;
   }
 }
 
-/* Ocultar controles en pantallas grandes (Desktop) */
+/* Ocultar controles en desktop */
 @media (min-width: 1025px) {
   .touch-controls {
     display: none !important;
