@@ -159,6 +159,7 @@ export default function Juego2() {
                 speed: 3, velX: 0, velY: 0,
                 jumping: false, grounded: false,
                 facing: 'right',
+                canDoubleJump: false,
             };
 
             boss = {
@@ -247,11 +248,24 @@ export default function Juego2() {
             const ctx = canvas.getContext('2d');
             frameCount++;
 
-            /* ── Salto — idéntico a Juego.js nivel 1 ── */
-            if ((keys[38] || keys[87] || touchJump.current) && !player.jumping && player.grounded) {
-                player.jumping  = true;
-                player.grounded = false;
-                player.velY     = -player.speed * 2;
+            /* ── Salto ── */
+            const jumpKey = !!(keys[38] || keys[87] || touchJump.current);
+
+            // Primer salto — idéntico a Juego.js
+            if (jumpKey && !player.jumping && player.grounded) {
+                player.jumping       = true;
+                player.grounded      = false;
+                player.velY          = -player.speed * 2;
+                player.canDoubleJump = false;
+            }
+            // Habilitar doble salto en cuanto se suelta la tecla estando en el aire
+            if (!jumpKey && player.jumping && !player.grounded) {
+                player.canDoubleJump = true;
+            }
+            // Segundo salto
+            if (jumpKey && player.canDoubleJump) {
+                player.velY          = -player.speed * 2;
+                player.canDoubleJump = false;
             }
 
             /* ── Movimiento horizontal ── */
@@ -292,8 +306,9 @@ export default function Juego2() {
                 } else if (dir === 't') {
                     player.velY *= -1;
                 } else if (dir === 'b') {
-                    player.grounded = true;
-                    player.jumping  = false;
+                    player.grounded      = true;
+                    player.jumping       = false;
+                    player.canDoubleJump = false;
                 }
                 if (bullet.active && colCheck(bullet, terrain[i])) {
                     bullet.active = false; bullet.x = -100;
