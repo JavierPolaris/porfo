@@ -9,9 +9,10 @@ import Stop from '../assets/img/stop.png';
 import Musica from '../assets/music/musica.mp3';
 import Pantalla from '../assets/img/fullscreen.png';
 
-const BOSS_MAX_HP = 5;
-const WIDTH = 800;
+const BOSS_MAX_HP = 6;
+const WIDTH  = 800;
 const HEIGHT = 600;
+const FLOOR  = HEIGHT - 2;
 
 export default function Juego2() {
     const touchLeft  = useRef(false);
@@ -20,10 +21,9 @@ export default function Juego2() {
     const touchShoot = useRef(false);
     const canvasRef  = useRef(null);
     const audioRef   = useRef(null);
-    const [isPortrait,    setIsPortrait]    = useState(false);
-    const [isFullScreen,  setIsFullScreen]  = useState(false);
+    const [isPortrait,   setIsPortrait]   = useState(false);
+    const [isFullScreen, setIsFullScreen] = useState(false);
 
-    /* ── Pantalla completa ─────────────────── */
     const toggleFullScreen = () => {
         const elem = document.documentElement;
         if (!document.fullscreenElement && !document.webkitFullscreenElement) {
@@ -41,7 +41,6 @@ export default function Juego2() {
             window.screen.orientation.lock('landscape').catch(() => {});
     }
 
-    /* ── Orientación ───────────────────────── */
     useEffect(() => {
         const handle = () => setIsPortrait(window.matchMedia('(orientation: portrait)').matches);
         handle();
@@ -53,7 +52,6 @@ export default function Juego2() {
         };
     }, []);
 
-    /* ── Audio ─────────────────────────────── */
     useEffect(() => {
         audioRef.current = new Audio(Musica);
         audioRef.current.loop   = true;
@@ -64,25 +62,26 @@ export default function Juego2() {
         const onStop = () => { audioRef.current.pause(); audioRef.current.currentTime = 0; };
         play?.addEventListener('click', onPlay);
         stop?.addEventListener('click', onStop);
-        return () => { play?.removeEventListener('click', onPlay); stop?.removeEventListener('click', onStop); };
+        return () => {
+            play?.removeEventListener('click', onPlay);
+            stop?.removeEventListener('click', onStop);
+        };
     }, []);
 
-    /* ── Scroll lock ───────────────────────── */
     useEffect(() => {
         const orig = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
         return () => { document.body.style.overflow = orig; };
     }, []);
 
-    /* ── JUEGO ─────────────────────────────── */
     useEffect(() => {
         let requestId;
-        let keys       = [];
-        let terrain    = [];
+        let keys        = [];
+        let terrain     = [];
         let bossBullets = [];
-        let frameCount = 0;
-        let bossShotTimer = 0;
-        let bossHitFlash  = 0;
+        let shockwaves  = [];
+        let frameCount  = 0;
+        let bossHitFlash = 0;
 
         const friction = 0.8;
         const gravity  = 0.5;
@@ -111,9 +110,14 @@ export default function Juego2() {
             }
         }
 
+        function overlaps(A, B) {
+            return A.x < B.x + B.width  && A.x + A.width  > B.x &&
+                   A.y < B.y + B.height && A.y + A.height > B.y;
+        }
+
         function resetPlayer() {
             player.x    = 60;
-            player.y    = HEIGHT - 120;
+            player.y    = FLOOR - 60;
             player.velX = 0;
             player.velY = 0;
         }
@@ -129,26 +133,34 @@ export default function Juego2() {
             canvas.width  = WIDTH;
             canvas.height = HEIGHT;
 
-            status        = 'playing';
-            bossHP        = BOSS_MAX_HP;
-            bossBullets   = [];
-            bossShotTimer = 0;
-            bossHitFlash  = 0;
-            frameCount    = 0;
-            keys          = [];
+            status       = 'playing';
+            bossHP       = BOSS_MAX_HP;
+            bossBullets  = [];
+            shockwaves   = [];
+            bossHitFlash = 0;
+            frameCount   = 0;
+            keys         = [];
 
             player = {
-                x: 60, y: HEIGHT - 120,
+                x: 60, y: FLOOR - 60,
                 width: 50, height: 50,
                 speed: 3, velX: 0, velY: 0,
                 jumping: false, grounded: false,
-                facing: 'right', shot: false,
+                facing: 'right',
             };
 
             boss = {
-                x: WIDTH / 2 - 60, y: 60,
-                width: 120, height: 120,
-                speed: 2, direction: 'right', alive: true,
+                x: WIDTH - 210, y: FLOOR - 95,
+                width: 95, height: 95,
+                baseSpeed: 1.4,
+                velX: 0, velY: 0,
+                grounded: true,
+                direction: 'left',
+                state: 'walk',      // 'walk' | 'charge' | 'jump'
+                stateTimer: 0,
+                nextAction: 150,
+                shotTimer: 60,
+                alive: true,
             };
 
             bullet = {
@@ -158,64 +170,56 @@ export default function Juego2() {
             };
 
             terrain = [];
-            // paredes y suelo
-            terrain.push({ x: 0,         y: 0,          width: 1,     height: HEIGHT });
-            terrain.push({ x: WIDTH - 1,  y: 0,          width: 1,     height: HEIGHT });
-            terrain.push({ x: 0,         y: HEIGHT - 2,  width: WIDTH, height: 20    });
-            // plataformas
-            terrain.push({ x: 100, y: 430, width: 160, height: 20 });
-            terrain.push({ x: 540, y: 430, width: 160, height: 20 });
-            terrain.push({ x: 310, y: 330, width: 180, height: 20 });
-            terrain.push({ x: 80,  y: 230, width: 130, height: 20 });
-            terrain.push({ x: 590, y: 230, width: 130, height: 20 });
-            terrain.push({ x: 300, y: 200, width: 200, height: 20 });
+            terrain.push({ x: 0,        y: 0,     width: 1,     height: HEIGHT });
+            terrain.push({ x: WIDTH - 1, y: 0,     width: 1,     height: HEIGHT });
+            terrain.push({ x: 0,        y: FLOOR,  width: WIDTH, height: 20     });
+            terrain.push({ x: 80,  y: 420, width: 130, height: 20 });
+            terrain.push({ x: 590, y: 420, width: 130, height: 20 });
+            terrain.push({ x: 290, y: 310, width: 220, height: 20 });
+            terrain.push({ x: 60,  y: 200, width: 110, height: 20 });
+            terrain.push({ x: 630, y: 200, width: 110, height: 20 });
         }
 
         reset();
 
-        /* ── Touch controls ── */
         if (isTouchDev()) {
             const joystickBase  = document.getElementById('joystick');
             const joystickShaft = joystickBase?.querySelector('.joystick-shaft');
             const jumpButton    = document.getElementById('jump-button');
             const shootButton   = document.getElementById('shoot-button');
             const maxDist       = 30;
-            let startX = 0, startY = 0;
+            let startX = 0;
 
-            function onJoyStart(e) {
-                e.preventDefault();
-                startX = e.targetTouches[0].clientX;
-                startY = e.targetTouches[0].clientY;
-            }
-            function onJoyMove(e) {
+            const onJoyStart  = e => { e.preventDefault(); startX = e.targetTouches[0].clientX; };
+            const onJoyMove   = e => {
                 e.preventDefault();
                 const dx = Math.max(-maxDist, Math.min(maxDist, e.targetTouches[0].clientX - startX));
                 if (joystickShaft) joystickShaft.style.transform = `translateX(${dx}px)`;
                 touchLeft.current  = dx < -10;
                 touchRight.current = dx > 10;
-            }
-            function onJoyEnd(e) {
+            };
+            const onJoyEnd    = e => {
                 e.preventDefault();
                 if (joystickShaft) joystickShaft.style.transform = 'translate(0,0)';
                 touchLeft.current  = false;
                 touchRight.current = false;
-            }
-            function onJumpStart(e) { e.preventDefault(); touchJump.current = true; }
-            function onJumpEnd(e)   { e.preventDefault(); touchJump.current = false; }
-            function onShootStart(e){ e.preventDefault(); touchShoot.current = true; }
-            function onShootEnd(e)  { e.preventDefault(); touchShoot.current = false; }
-            function noScroll(e)    { e.preventDefault(); }
+            };
+            const onJumpStart  = e => { e.preventDefault(); touchJump.current  = true;  };
+            const onJumpEnd    = e => { e.preventDefault(); touchJump.current  = false; };
+            const onShootStart = e => { e.preventDefault(); touchShoot.current = true;  };
+            const onShootEnd   = e => { e.preventDefault(); touchShoot.current = false; };
+            const noScroll     = e => e.preventDefault();
 
-            joystickBase?.addEventListener('touchstart', onJoyStart,  { passive: false });
-            joystickBase?.addEventListener('touchmove',  onJoyMove,   { passive: false });
-            joystickBase?.addEventListener('touchend',   onJoyEnd,    { passive: false });
-            joystickBase?.addEventListener('touchmove',  noScroll,    { passive: false });
-            jumpButton?.addEventListener('touchstart',   onJumpStart, { passive: false });
-            jumpButton?.addEventListener('touchend',     onJumpEnd,   { passive: false });
-            jumpButton?.addEventListener('touchmove',    noScroll,    { passive: false });
-            shootButton?.addEventListener('touchstart',  onShootStart,{ passive: false });
-            shootButton?.addEventListener('touchend',    onShootEnd,  { passive: false });
-            shootButton?.addEventListener('touchmove',   noScroll,    { passive: false });
+            joystickBase?.addEventListener('touchstart', onJoyStart,   { passive: false });
+            joystickBase?.addEventListener('touchmove',  onJoyMove,    { passive: false });
+            joystickBase?.addEventListener('touchend',   onJoyEnd,     { passive: false });
+            joystickBase?.addEventListener('touchmove',  noScroll,     { passive: false });
+            jumpButton?.addEventListener('touchstart',   onJumpStart,  { passive: false });
+            jumpButton?.addEventListener('touchend',     onJumpEnd,    { passive: false });
+            jumpButton?.addEventListener('touchmove',    noScroll,     { passive: false });
+            shootButton?.addEventListener('touchstart',  onShootStart, { passive: false });
+            shootButton?.addEventListener('touchend',    onShootEnd,   { passive: false });
+            shootButton?.addEventListener('touchmove',   noScroll,     { passive: false });
         }
 
         function keyDown(e) { keys[e.keyCode] = true; }
@@ -223,18 +227,17 @@ export default function Juego2() {
         document.body.addEventListener('keydown', keyDown);
         document.body.addEventListener('keyup',   keyUp);
 
-        /* ── Bucle principal ── */
         function update() {
             const canvas = document.getElementById('canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             frameCount++;
 
-            /* Entrada jugador */
+            /* ── Player input ── */
             if ((keys[38] || keys[87] || touchJump.current) && !player.jumping && player.grounded) {
-                player.jumping = true;
+                player.jumping  = true;
                 player.grounded = false;
-                player.velY = -player.speed * 2.8;
+                player.velY     = -player.speed * 2.8;
             }
             if (keys[39] || keys[68] || touchRight.current) {
                 player.facing = 'right';
@@ -251,33 +254,29 @@ export default function Juego2() {
                 bullet.y = player.y + 15;
             }
 
-            /* Física */
+            /* ── Physics ── */
             player.velX *= friction;
             player.velY += gravity;
 
-            /* Canvas */
+            /* ── Background ── */
             ctx.clearRect(0, 0, WIDTH, HEIGHT);
             ctx.drawImage(imgFondo, 0, 0, WIDTH, HEIGHT);
-
-            /* Overlay oscuro para que contraste más con el nivel 1 */
-            ctx.fillStyle = 'rgba(20, 0, 40, 0.45)';
+            ctx.fillStyle = 'rgba(8, 0, 25, 0.28)';
             ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-            /* Colisión jugador-terreno */
+            /* ── Player–terrain collision ── */
             player.grounded = false;
             for (let i = 0; i < terrain.length; i++) {
                 const dir = colCheck(player, terrain[i]);
                 if (dir === 'l' || dir === 'r') { player.velX = 0; }
                 else if (dir === 't')            { player.velY *= -0.3; }
                 else if (dir === 'b')            { player.grounded = true; player.jumping = false; player.velY = 0; }
-
-                /* Bala-terreno */
                 if (bullet.active && colCheck(bullet, terrain[i])) {
                     bullet.active = false; bullet.x = -100;
                 }
             }
 
-            /* Bala boss-terreno */
+            /* Filter boss bullets that hit terrain */
             bossBullets = bossBullets.filter(bb => {
                 for (let i = 0; i < terrain.length; i++) {
                     if (colCheck(bb, terrain[i])) return false;
@@ -288,68 +287,147 @@ export default function Juego2() {
             player.x += player.velX;
             player.y += player.velY;
 
-            /* Mover bala jugador */
+            /* ── Player bullet ── */
             if (bullet.active) {
                 bullet.x += bullet.direction === 'right' ? bullet.speed : -bullet.speed;
-                if (bullet.x < -50 || bullet.x > WIDTH + 50) { bullet.active = false; }
+                if (bullet.x < -50 || bullet.x > WIDTH + 50) bullet.active = false;
 
-                /* Bala impacta boss */
                 if (boss.alive && colCheck(bullet, boss)) {
                     bullet.active = false; bullet.x = -100;
                     bossHP--;
-                    bossHitFlash = 18;
+                    bossHitFlash = 15;
                     if (bossHP <= 0) { boss.alive = false; status = 'win'; }
                 }
             }
 
-            /* Boss IA */
+            /* ── Boss AI (Metal Slug style) ── */
             if (boss.alive) {
-                // Cuando tiene ≤2 HP se acelera
-                const speedMod = bossHP <= 2 ? 1.7 : 1;
-                boss.x += boss.direction === 'right' ? boss.speed * speedMod : -boss.speed * speedMod;
-                if (boss.x + boss.width >= WIDTH - 10) boss.direction = 'left';
-                if (boss.x <= 10)                       boss.direction = 'right';
+                const phase2      = bossHP <= 3;
+                const spd         = phase2 ? boss.baseSpeed * 1.9 : boss.baseSpeed;
+                const shotInterval = phase2 ? 72 : 130;
 
-                // Disparo: cada 120 frames normal, cada 60 si ≤2 HP
-                const shotInterval = bossHP <= 2 ? 60 : 120;
-                bossShotTimer++;
-                if (bossShotTimer >= shotInterval) {
-                    bossShotTimer = 0;
-                    const cx = boss.x + boss.width / 2;
-                    const cy = boss.y + boss.height;
-                    const px = player.x + player.width / 2;
-                    const py = player.y + player.height / 2;
-                    const dx = px - cx, dy = py - cy;
-                    const len = Math.sqrt(dx * dx + dy * dy) || 1;
-                    const spd = 4;
+                if (!boss.grounded) boss.velY += gravity;
 
-                    // 3 balas en abanico
-                    [{ offX: 0, offA: 0 }, { offX: -18, offA: -0.3 }, { offX: 18, offA: 0.3 }].forEach(({ offX, offA }) => {
-                        const angle = Math.atan2(dy, dx) + offA;
-                        bossBullets.push({
-                            x: cx + offX - 8, y: cy,
-                            width: 16, height: 16,
-                            velX: Math.cos(angle) * spd,
-                            velY: Math.sin(angle) * spd,
-                        });
-                    });
+                boss.stateTimer++;
+
+                switch (boss.state) {
+                    case 'walk':
+                        boss.velX = boss.direction === 'right' ? spd : -spd;
+                        if (boss.x + boss.width >= WIDTH - 15) boss.direction = 'left';
+                        if (boss.x <= 15)                       boss.direction = 'right';
+                        if (boss.stateTimer >= boss.nextAction) {
+                            boss.stateTimer = 0;
+                            if (Math.random() < 0.5) {
+                                boss.state     = 'charge';
+                                boss.direction = player.x < boss.x + boss.width / 2 ? 'left' : 'right';
+                                boss.nextAction = 65;
+                            } else {
+                                boss.state    = 'jump';
+                                boss.velY     = -11;
+                                boss.grounded = false;
+                                boss.nextAction = 999;
+                            }
+                        }
+                        break;
+
+                    case 'charge':
+                        boss.velX = boss.direction === 'right' ? spd * 4.2 : -spd * 4.2;
+                        if (boss.stateTimer >= boss.nextAction ||
+                            boss.x + boss.width >= WIDTH - 15 || boss.x <= 15) {
+                            boss.state      = 'walk';
+                            boss.stateTimer = 0;
+                            boss.nextAction = 100 + Math.floor(Math.random() * 80);
+                            boss.velX       = 0;
+                        }
+                        break;
+
+                    case 'jump':
+                        boss.velX = 0;
+                        break;
+
+                    default:
+                        break;
                 }
 
-                /* Boss toca jugador → resetear */
+                /* Move */
+                boss.x += boss.velX;
+                boss.y += boss.velY;
+
+                /* Ground landing */
+                if (boss.y + boss.height >= FLOOR) {
+                    const wasAirborne = !boss.grounded;
+                    boss.y      = FLOOR - boss.height;
+                    boss.velY   = 0;
+                    boss.grounded = true;
+                    if (wasAirborne && boss.state === 'jump') {
+                        shockwaves.push({
+                            x: boss.x - 55,
+                            y: FLOOR - 20,
+                            width: boss.width + 110,
+                            height: 20,
+                            ttl: 50, maxTtl: 50,
+                        });
+                        boss.state      = 'walk';
+                        boss.stateTimer = 0;
+                        boss.nextAction = 110 + Math.floor(Math.random() * 70);
+                    }
+                } else {
+                    boss.grounded = false;
+                }
+
+                /* Wall clamp */
+                if (boss.x < 15) {
+                    boss.x = 15; boss.direction = 'right';
+                    if (boss.state === 'charge') { boss.state = 'walk'; boss.stateTimer = 0; boss.nextAction = 100; boss.velX = 0; }
+                }
+                if (boss.x + boss.width > WIDTH - 15) {
+                    boss.x = WIDTH - 15 - boss.width; boss.direction = 'left';
+                    if (boss.state === 'charge') { boss.state = 'walk'; boss.stateTimer = 0; boss.nextAction = 100; boss.velX = 0; }
+                }
+
+                /* Shoot horizontal fireballs toward player */
+                boss.shotTimer++;
+                if (boss.shotTimer >= shotInterval && boss.state !== 'jump') {
+                    boss.shotTimer = 0;
+                    const fireDir = player.x < boss.x + boss.width / 2 ? -1 : 1;
+                    const fireY   = boss.y + boss.height * 0.52;
+                    bossBullets.push({
+                        x: fireDir > 0 ? boss.x + boss.width : boss.x - 20,
+                        y: fireY - 9,
+                        width: 18, height: 18,
+                        velX: fireDir * 5, velY: 0,
+                    });
+                    if (phase2) {
+                        bossBullets.push({
+                            x: fireDir > 0 ? boss.x + boss.width : boss.x - 20,
+                            y: fireY - 24,
+                            width: 14, height: 14,
+                            velX: fireDir * 4.5, velY: -1.5,
+                        });
+                    }
+                }
+
                 if (colCheck(player, boss)) resetPlayer();
             }
 
-            /* Mover y comprobar balas boss */
+            /* ── Move boss bullets ── */
             bossBullets = bossBullets.filter(bb => {
                 bb.x += bb.velX;
                 bb.y += bb.velY;
-                if (colCheck(player, bb)) { resetPlayer(); return false; }
-                return bb.x > -50 && bb.x < WIDTH + 50 && bb.y < HEIGHT + 50 && bb.y > -50;
+                if (overlaps(player, bb)) { resetPlayer(); return false; }
+                return bb.x > -60 && bb.x < WIDTH + 60 && bb.y < HEIGHT + 60 && bb.y > -60;
             });
 
-            /* ── DIBUJO ── */
+            /* ── Shockwaves ── */
+            shockwaves = shockwaves.filter(sw => {
+                sw.ttl--;
+                sw.x     -= 3.5;
+                sw.width += 7;
+                if (overlaps(player, sw)) resetPlayer();
+                return sw.ttl > 0;
+            });
 
-            /* Plataformas */
+            /* ── Draw platforms ── */
             for (let i = 3; i < terrain.length; i++) {
                 const t = terrain[i];
                 for (let px = t.x; px < t.x + t.width; px += 50) {
@@ -357,60 +435,20 @@ export default function Juego2() {
                 }
             }
 
-            /* Boss */
-            if (boss.alive) {
-                if (bossHitFlash > 0) {
-                    ctx.save();
-                    ctx.globalAlpha = 0.55;
-                    ctx.fillStyle   = '#ff0000';
-                    ctx.fillRect(boss.x - 4, boss.y - 4, boss.width + 8, boss.height + 8);
-                    ctx.restore();
-                    bossHitFlash--;
-                }
-
-                /* Aura demoníaca pulsante */
-                const pulse = 0.15 + Math.abs(Math.sin(frameCount * 0.08)) * 0.25;
+            /* ── Draw shockwaves ── */
+            shockwaves.forEach(sw => {
+                const alpha = sw.ttl / sw.maxTtl;
                 ctx.save();
-                ctx.globalAlpha = pulse;
-                ctx.fillStyle   = '#9900ff';
-                ctx.beginPath();
-                ctx.ellipse(boss.x + boss.width / 2, boss.y + boss.height / 2,
-                    boss.width / 2 + 14, boss.height / 2 + 14, 0, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.globalAlpha = alpha * 0.88;
+                const g = ctx.createLinearGradient(sw.x, sw.y, sw.x, sw.y + sw.height);
+                g.addColorStop(0, '#ffee44');
+                g.addColorStop(1, '#ff4400');
+                ctx.fillStyle = g;
+                ctx.fillRect(sw.x, sw.y, sw.width, sw.height);
                 ctx.restore();
+            });
 
-                ctx.drawImage(imgPina, boss.x, boss.y, boss.width, boss.height);
-
-                /* Ojos rojos demoníacos */
-                ctx.fillStyle = '#ff0000';
-                ctx.beginPath(); ctx.arc(boss.x + 35, boss.y + 40, 8, 0, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.arc(boss.x + 85, boss.y + 40, 8, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#fff';
-                ctx.beginPath(); ctx.arc(boss.x + 37, boss.y + 38, 3, 0, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.arc(boss.x + 87, boss.y + 38, 3, 0, Math.PI * 2); ctx.fill();
-
-                /* Barra de vida */
-                const barW = boss.width + 20;
-                const barX = boss.x - 10;
-                const barY = boss.y - 22;
-                ctx.fillStyle = '#1a0000';
-                ctx.fillRect(barX, barY, barW, 13);
-                const pct   = bossHP / BOSS_MAX_HP;
-                ctx.fillStyle = pct > 0.6 ? '#22dd44' : pct > 0.3 ? '#ffaa00' : '#ff2200';
-                ctx.fillRect(barX, barY, barW * pct, 13);
-                ctx.strokeStyle = '#ffffff88';
-                ctx.lineWidth = 1;
-                ctx.strokeRect(barX, barY, barW, 13);
-
-                // Corazones de vida
-                for (let h = 0; h < BOSS_MAX_HP; h++) {
-                    ctx.font = '11px serif';
-                    ctx.fillStyle = h < bossHP ? '#ff2255' : '#441122';
-                    ctx.fillText('♥', barX + h * (barW / BOSS_MAX_HP) + 3, barY + 11);
-                }
-            }
-
-            /* Balas del boss */
+            /* ── Draw boss bullets ── */
             bossBullets.forEach(bb => {
                 ctx.save();
                 const grad = ctx.createRadialGradient(
@@ -419,7 +457,7 @@ export default function Juego2() {
                 );
                 grad.addColorStop(0, '#ffffff');
                 grad.addColorStop(0.4, '#ff8800');
-                grad.addColorStop(1, '#ff000000');
+                grad.addColorStop(1, 'rgba(255, 0, 0, 0)');
                 ctx.fillStyle = grad;
                 ctx.beginPath();
                 ctx.arc(bb.x + bb.width / 2, bb.y + bb.height / 2, bb.width / 2, 0, Math.PI * 2);
@@ -427,50 +465,72 @@ export default function Juego2() {
                 ctx.restore();
             });
 
-            /* Bala jugador */
+            /* ── Draw boss ── */
+            if (boss.alive) {
+                if (bossHitFlash > 0) {
+                    ctx.save();
+                    ctx.globalAlpha = 0.6;
+                    ctx.fillStyle   = '#ff0000';
+                    ctx.fillRect(boss.x - 4, boss.y - 4, boss.width + 8, boss.height + 8);
+                    ctx.restore();
+                    bossHitFlash--;
+                }
+                ctx.drawImage(imgPina, boss.x, boss.y, boss.width, boss.height);
+            }
+
+            /* ── Draw player bullet ── */
             if (bullet.active) {
                 ctx.fillStyle = '#FDDD32';
                 ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
             }
 
-            /* Jugador */
+            /* ── Draw player ── */
             if (player.facing === 'right') ctx.drawImage(imgYo,     player.x, player.y, player.width, player.height);
             else                           ctx.drawImage(imgYoLeft, player.x, player.y, player.width, player.height);
 
-            /* HUD — nombre del boss */
-            ctx.save();
-            ctx.fillStyle = 'rgba(60, 0, 80, 0.75)';
-            ctx.fillRect(WIDTH / 2 - 155, 8, 310, 28);
-            ctx.fillStyle = '#ff44aa';
-            ctx.font      = 'bold 12px "Press Start 2P", monospace';
-            ctx.textAlign = 'center';
-            ctx.fillText('☠ PIÑA DEMONÍACA ☠', WIDTH / 2, 26);
-            ctx.textAlign = 'left';
-            ctx.restore();
+            /* ── HUD (drawn last so nothing covers it) ── */
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.72)';
+            ctx.fillRect(0, 0, WIDTH, 46);
+            ctx.fillStyle = '#ff9b00';
+            ctx.fillRect(0, 46, WIDTH, 2);
 
-            /* Pantalla de victoria */
+            const heartGap = 28;
+            const hudCenterX = WIDTH / 2;
+            const heartStartX = hudCenterX - (BOSS_MAX_HP * heartGap) / 2 + 4;
+            ctx.font = '20px serif';
+            for (let h = 0; h < BOSS_MAX_HP; h++) {
+                ctx.fillStyle = h < bossHP ? '#ff2255' : 'rgba(255,255,255,0.12)';
+                ctx.fillText('♥', heartStartX + h * heartGap, 34);
+            }
+
+            const barW = 220;
+            const barX = hudCenterX - barW / 2;
+            ctx.fillStyle = 'rgba(0,0,0,0.55)';
+            ctx.fillRect(barX, 8, barW, 10);
+            const pct = bossHP / BOSS_MAX_HP;
+            ctx.fillStyle = pct > 0.6 ? '#22dd44' : pct > 0.3 ? '#ffaa00' : '#ff2200';
+            ctx.fillRect(barX, 8, barW * pct, 10);
+            ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+            ctx.lineWidth   = 1;
+            ctx.strokeRect(barX, 8, barW, 10);
+
+            /* ── Win screen ── */
             if (status === 'win') {
                 ctx.save();
-                ctx.fillStyle = `rgba(0, 0, 0, ${Math.min(0.78, 0.3 + frameCount * 0.008)})`;
+                ctx.fillStyle = `rgba(0,0,0,${Math.min(0.8, 0.3 + frameCount * 0.008)})`;
                 ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
                 ctx.textAlign = 'center';
-
                 ctx.fillStyle = `hsl(${frameCount * 6 % 360}, 100%, 60%)`;
                 ctx.font      = 'bold 28px "Press Start 2P", monospace';
                 ctx.fillText('¡DERROTADA!', WIDTH / 2, HEIGHT / 2 - 50);
-
                 ctx.fillStyle = '#FFD700';
                 ctx.font      = '14px "Press Start 2P", monospace';
                 ctx.fillText('La Piña ha caído.', WIDTH / 2, HEIGHT / 2);
-
                 ctx.fillStyle = '#ffffff';
                 ctx.font      = '11px "Press Start 2P", monospace';
                 ctx.fillText('Pulsa ESPACIO para continuar', WIDTH / 2, HEIGHT / 2 + 40);
-
                 ctx.textAlign = 'left';
                 ctx.restore();
-
                 if (keys[32] || touchShoot.current) {
                     cancelAnimationFrame(requestId);
                     window.location.href = '/about';
