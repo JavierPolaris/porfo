@@ -993,7 +993,7 @@ export default function Juego() {
 
             //dibujar victoria
             if (status === 'win') {
-                window.location.href = "/about";
+                window.location.href = "/juego2";
             }
             //dibujar score
             if (status === 'puntos') {
