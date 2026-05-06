@@ -493,7 +493,14 @@ export default function Juego2() {
 
             /* ── Dibujar balas del boss (piñita pequeña) ── */
             bossBullets.forEach(bb => {
-                ctx.drawImage(imgPinaSmall, bb.x, bb.y, bb.width, bb.height);
+                if (bb.velX < 0) {
+                    ctx.save();
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(imgPinaSmall, -(bb.x + bb.width), bb.y, bb.width, bb.height);
+                    ctx.restore();
+                } else {
+                    ctx.drawImage(imgPinaSmall, bb.x, bb.y, bb.width, bb.height);
+                }
             });
 
             /* ── Dibujar boss ── */
@@ -506,7 +513,14 @@ export default function Juego2() {
                     ctx.restore();
                     bossHitFlash--;
                 }
-                ctx.drawImage(imgPina, boss.x, boss.y, boss.width, boss.height);
+                if (boss.direction === 'left') {
+                    ctx.save();
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(imgPina, -(boss.x + boss.width), boss.y, boss.width, boss.height);
+                    ctx.restore();
+                } else {
+                    ctx.drawImage(imgPina, boss.x, boss.y, boss.width, boss.height);
+                }
             }
 
             /* ── Dibujar bala del jugador ── */
