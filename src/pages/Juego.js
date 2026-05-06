@@ -222,12 +222,10 @@ export default function Juego() {
 
             pina = new Image();
             pina.src = Pina;
+            width  = 800;
+            height = 600;
             canvas.width  = window.innerWidth;
             canvas.height = window.innerHeight;
-            width  = canvas.width;
-            height = canvas.height;
-            const sx = width  / 800;
-            const sy = height / 600;
             status = 'playing';
             player = {
 
@@ -249,32 +247,32 @@ export default function Juego() {
                 width: 50,
                 height: 50,
                 x: width - 51,
-                y: Math.round(35 * sy)
+                y: 35
             };
 
             mrPeperoniS = {
                 width: 120,
                 height: 120,
-                x: width - Math.round(751 * sx),
+                x: width - 751,
                 y: -30
             };
             mrPeperoni1 = {
                 width: 50,
                 height: 50,
-                x: width - Math.round(180 * sx),
-                y: Math.round(195 * sy)
+                x: width - 180,
+                y: 195
             }
             mrPeperoni2 = {
                 width: 50,
                 height: 50,
-                x: width - Math.round(380 * sx),
-                y: Math.round(424 * sy)
+                x: width - 380,
+                y: 424
             }
             mrPeperoni3 = {
                 width: 50,
                 height: 50,
-                x: width - Math.round(550 * sx),
-                y: Math.round(115 * sy)
+                x: width - 550,
+                y: 115
             }
 
             keys = [];
@@ -302,8 +300,8 @@ export default function Juego() {
             gravity = 0.2;
             enemy1 = {
                 color: '#E3504B',
-                x: Math.round(120 * sx),
-                y: Math.round(200 * sy),
+                x: 120,
+                y: 200,
                 width: 60,
                 height: 60,
                 speed: 2,
@@ -312,8 +310,8 @@ export default function Juego() {
                 mortal: true
             };
             enemy2 = {
-                x: Math.round(416 * sx),
-                y: Math.round(417 * sy),
+                x: 416,
+                y: 417,
                 width: 60,
                 height: 60,
                 speed: 1,
@@ -322,8 +320,8 @@ export default function Juego() {
                 mortal: true,
             };
             enemy3 = {
-                x: Math.round(556 * sx),
-                y: Math.round(25 * sy),
+                x: 556,
+                y: 25,
                 width: 60,
                 height: 60,
                 speed: 2,
@@ -332,8 +330,8 @@ export default function Juego() {
                 mortal: true
             };
             sniper = {
-                x: Math.round(305 * sx),
-                y: Math.round(186 * sy),
+                x: 305,
+                y: 186,
                 width: 60,
                 height: 60,
                 alive: true,
@@ -357,10 +355,10 @@ export default function Juego() {
             evil.push(evilBullet);
 
             //parachoques(terreno invisible) para los enemigos
-            bumpers.push({ x: Math.round(306*sx), y: Math.round(460*sy), width: Math.round(40*sx), height: Math.round(40*sy) });
-            bumpers.push({ x: Math.round(520*sx), y: Math.round(460*sy), width: Math.round(40*sx), height: Math.round(40*sy) });
-            bumpers.push({ x: Math.round(356*sx), y: Math.round(40*sy),  width: Math.round(40*sx), height: Math.round(40*sy) });
-            bumpers.push({ x: Math.round(596*sx), y: Math.round(40*sy),  width: Math.round(40*sx), height: Math.round(40*sy) });
+            bumpers.push({ x: 306, y: 460, width: 40, height: 40 });
+            bumpers.push({ x: 520, y: 460, width: 40, height: 40 });
+            bumpers.push({ x: 356, y: 40,  width: 40, height: 40 });
+            bumpers.push({ x: 596, y: 40,  width: 40, height: 40 });
 
 
             // Terreno
@@ -388,26 +386,26 @@ export default function Juego() {
             });
 
             //cueva
-            terrain.push({ x: Math.round(130*sx), y: Math.round(170*sy), width: Math.round(40*sx),  height: Math.round(40*sy)  });
-            terrain.push({ x: 0,                  y: Math.round(400*sy), width: Math.round(200*sx), height: Math.round(200*sy) });
+            terrain.push({ x: 130, y: 170, width: 40,  height: 40  });
+            terrain.push({ x: 0,   y: 400, width: 200, height: 200 });
 
             //plataformas bajas
-            terrain.push({ x: Math.round(556*sx), y: Math.round(480*sy), width: Math.max(4, Math.round(20*sx)),  height: Math.round(40*sy) });
-            terrain.push({ x: Math.round(356*sx), y: Math.round(470*sy), width: Math.round(150*sx), height: Math.round(40*sy) });
-            terrain.push({ x: Math.round(250*sx), y: Math.round(480*sy), width: Math.max(4, Math.round(20*sx)),  height: Math.round(40*sy) });
+            terrain.push({ x: 556, y: 480, width: 20,  height: 40 });
+            terrain.push({ x: 356, y: 470, width: 150, height: 40 });
+            terrain.push({ x: 250, y: 480, width: 20,  height: 40 });
 
             //escaleras
-            terrain.push({ x: Math.round(646*sx), y: Math.round(400*sy), width: Math.round(200*sx), height: Math.round(40*sy) });
-            terrain.push({ x: Math.round(686*sx), y: Math.round(360*sy), width: Math.round(160*sx), height: Math.round(40*sy) });
-            terrain.push({ x: Math.round(726*sx), y: Math.round(320*sy), width: Math.round(160*sx), height: Math.round(40*sy) });
+            terrain.push({ x: 646, y: 400, width: 200, height: 40 });
+            terrain.push({ x: 686, y: 360, width: 160, height: 40 });
+            terrain.push({ x: 726, y: 320, width: 160, height: 40 });
 
             //plataformas altas
-            terrain.push({ x: Math.round(606*sx), y: Math.round(240*sy), width: Math.round(70*sx),  height: Math.round(40*sy) });
-            terrain.push({ x: Math.round(396*sx), y: Math.round(280*sy), width: Math.round(120*sx), height: Math.round(40*sy) });
-            terrain.push({ x: Math.round(316*sx), y: Math.round(240*sy), width: Math.round(40*sx),  height: Math.round(40*sy) });
-            terrain.push({ x: Math.round(256*sx), y: Math.round(160*sy), width: Math.round(40*sx),  height: Math.round(40*sy) });
-            terrain.push({ x: Math.round(396*sx), y: Math.round(80*sy),  width: Math.round(200*sx), height: Math.round(40*sy) });
-            terrain.push({ x: Math.round(646*sx), y: Math.round(80*sy),  width: Math.round(160*sx), height: Math.round(40*sy) });
+            terrain.push({ x: 606, y: 240, width: 70,  height: 40 });
+            terrain.push({ x: 396, y: 280, width: 120, height: 40 });
+            terrain.push({ x: 316, y: 240, width: 40,  height: 40 });
+            terrain.push({ x: 256, y: 160, width: 40,  height: 40 });
+            terrain.push({ x: 396, y: 80,  width: 200, height: 40 });
+            terrain.push({ x: 646, y: 80,  width: 160, height: 40 });
 
         }
 
@@ -574,6 +572,7 @@ export default function Juego() {
             player.velY += gravity;
 
             //limpiar el canvas preparar para reiniciar
+            ctx.setTransform(canvas.width / 800, 0, 0, canvas.height / 600, 0, 0);
             ctx.clearRect(0, 0, width, height);
             ctx.fillStyle = "black";
             ctx.beginPath();
