@@ -36,7 +36,7 @@ html, body {
 
 .hero {
   text-align: center;
-  background: rgba(0, 0, 0, 0.55);
+  background: #00cdb061;
   backdrop-filter: blur(6px);
   border-radius: 16px;
   padding: 3rem 4rem;
