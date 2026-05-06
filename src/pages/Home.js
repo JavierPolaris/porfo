@@ -16,10 +16,10 @@ export default function Home() {
         <div className='hero'>
           <p className='hero-greeting'>Hola, soy</p>
           <h1 className='hero-name'>Javier G-R Cantón</h1>
-          <p className='hero-title'>Full Stack Developer</p>
+          <p className='hero-title'>Ecommerce · Full Stack · Technical Lead</p>
           <p className='hero-sub'>
-            Desarrollo aplicaciones web de principio a fin.<br />
-            Actualmente en <strong>Silbon</strong>, donde llevo casi 2 años.
+            4 años en <strong>Silbon</strong> evolucionando de desarrollador frontend
+            a arquitectura digital, automatización, integraciones y producto propio.
           </p>
           <div className='hero-cta'>
             <Link to="/projects" className='btn-primary'>Ver proyectos</Link>
