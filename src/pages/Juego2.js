@@ -12,6 +12,9 @@ import Pantalla from '../assets/img/fullscreen.png';
 
 const BOSS_MAX_HP     = 8;
 const PLAYER_MAX_LIVES = 3;
+const WIDTH  = 800;
+const HEIGHT = 600;
+const FLOOR  = HEIGHT - 80;   // 520 — deja 80px libres abajo para los controles
 
 export default function Juego2() {
     const touchLeft  = useRef(false);
@@ -75,7 +78,6 @@ export default function Juego2() {
 
     useEffect(() => {
         let requestId;
-        let WIDTH, HEIGHT, FLOOR;
         let keys         = [];
         let terrain      = [];
         let bossBullets  = [];
@@ -141,9 +143,6 @@ export default function Juego2() {
             const canvas = document.getElementById('canvas');
             canvas.width  = window.innerWidth;
             canvas.height = window.innerHeight;
-            WIDTH  = canvas.width;
-            HEIGHT = canvas.height;
-            FLOOR  = HEIGHT - 2;
 
             status         = 'playing';
             bossHP         = BOSS_MAX_HP;
@@ -186,14 +185,14 @@ export default function Juego2() {
             };
 
             terrain = [];
-            terrain.push({ x: 0,        y: 0,     width: 1,     height: HEIGHT });
-            terrain.push({ x: WIDTH - 1, y: 0,     width: 1,     height: HEIGHT });
-            terrain.push({ x: 0,        y: FLOOR,  width: WIDTH, height: 20     });
+            terrain.push({ x: 0,       y: 0,    width: 1,     height: HEIGHT });
+            terrain.push({ x: WIDTH-1, y: 0,    width: 1,     height: HEIGHT });
+            terrain.push({ x: 0,       y: FLOOR, width: WIDTH, height: HEIGHT - FLOOR });
 
-            // 3 plataformas relativas a la pantalla
-            terrain.push({ x: 75,              y: HEIGHT - 120, width: 150, height: 40 });
-            terrain.push({ x: WIDTH - 225,      y: HEIGHT - 120, width: 150, height: 40 });
-            terrain.push({ x: WIDTH / 2 - 100,  y: HEIGHT - 240, width: 200, height: 40 });
+            // 3 plataformas
+            terrain.push({ x: 75,  y: 420, width: 150, height: 40 });
+            terrain.push({ x: 575, y: 420, width: 150, height: 40 });
+            terrain.push({ x: 300, y: 310, width: 200, height: 40 });
         }
 
         reset();
@@ -292,6 +291,7 @@ export default function Juego2() {
             player.velY += gravity;
 
             /* ── Fondo ── */
+            ctx.setTransform(window.innerWidth / 800, 0, 0, window.innerHeight / 600, 0, 0);
             ctx.clearRect(0, 0, WIDTH, HEIGHT);
             ctx.drawImage(imgFondo, 0, 0, WIDTH, HEIGHT);
             ctx.fillStyle = 'rgba(8, 0, 25, 0.28)';
