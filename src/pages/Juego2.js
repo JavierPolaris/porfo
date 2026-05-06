@@ -581,15 +581,18 @@ export default function Juego2() {
                 ctx.font      = 'bold 28px "Press Start 2P", monospace';
                 ctx.fillText('GAME OVER', WIDTH / 2, HEIGHT / 2 - 30);
                 ctx.fillStyle = '#ffffff';
-                ctx.font      = '12px "Press Start 2P", monospace';
-                ctx.fillText(isTouchDev() ? 'Toca B para reintentar' : 'Pulsa ESPACIO para reintentar', WIDTH / 2, HEIGHT / 2 + 30);
+                ctx.font      = '11px "Press Start 2P", monospace';
+                if (isTouchDev()) {
+                    ctx.fillText('B · volver a jugar', WIDTH / 2, HEIGHT / 2 + 20);
+                    ctx.fillText('A · ir al perfil',   WIDTH / 2, HEIGHT / 2 + 44);
+                } else {
+                    ctx.fillText('ESPACIO · volver a jugar', WIDTH / 2, HEIGHT / 2 + 20);
+                    ctx.fillText('ESC · ir al perfil',       WIDTH / 2, HEIGHT / 2 + 44);
+                }
                 ctx.textAlign = 'left';
                 ctx.restore();
-                if (keys[32] || touchShoot.current) {
-                    reset();
-                    requestId = requestAnimationFrame(update);
-                    return;
-                }
+                if (keys[32] || touchShoot.current) { reset(); requestId = requestAnimationFrame(update); return; }
+                if (keys[27] || touchJump.current)  { cancelAnimationFrame(requestId); window.location.href = '/about'; return; }
             }
 
             /* ── Victoria ── */
@@ -611,21 +614,25 @@ export default function Juego2() {
                 if (elapsed > 120) {
                     ctx.fillStyle = '#ffffff';
                     ctx.font      = '11px "Press Start 2P", monospace';
-                    ctx.fillText(isTouchDev() ? 'Toca B para continuar' : 'Pulsa ESPACIO para continuar', WIDTH / 2, HEIGHT / 2 + 50);
+                    if (isTouchDev()) {
+                        ctx.fillText('B · volver a jugar', WIDTH / 2, HEIGHT / 2 + 40);
+                        ctx.fillText('A · ir al perfil',   WIDTH / 2, HEIGHT / 2 + 64);
+                    } else {
+                        ctx.fillText('ESPACIO · volver a jugar', WIDTH / 2, HEIGHT / 2 + 40);
+                        ctx.fillText('ESC · ir al perfil',       WIDTH / 2, HEIGHT / 2 + 64);
+                    }
                 }
 
                 ctx.textAlign = 'left';
                 ctx.restore();
 
-                // winKeyReleased: fuerza soltar Space antes de poder continuar
-                // evita que la misma pulsación que disparó la última bala active el redirect
                 const spaceNow = !!(keys[32] || touchShoot.current);
+                const escNow   = !!(keys[27] || touchJump.current);
                 if (!winKeyReleased && !spaceNow) winKeyReleased = true;
 
-                if (winKeyReleased && spaceNow && elapsed > 120) {
-                    cancelAnimationFrame(requestId);
-                    window.location.href = '/about';
-                    return;
+                if (winKeyReleased && elapsed > 120) {
+                    if (spaceNow) { reset(); requestId = requestAnimationFrame(update); return; }
+                    if (escNow)   { cancelAnimationFrame(requestId); window.location.href = '/about'; return; }
                 }
             }
 
