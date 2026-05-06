@@ -591,7 +591,7 @@ export default function Juego2() {
                 }
                 ctx.textAlign = 'left';
                 ctx.restore();
-                if (keys[32] || touchShoot.current) { reset(); requestId = requestAnimationFrame(update); return; }
+                if (keys[32] || touchShoot.current) { cancelAnimationFrame(requestId); window.location.href = '/juego'; return; }
                 if (keys[27] || touchJump.current)  { cancelAnimationFrame(requestId); window.location.href = '/about'; return; }
             }
 
@@ -631,7 +631,7 @@ export default function Juego2() {
                 if (!winKeyReleased && !spaceNow) winKeyReleased = true;
 
                 if (winKeyReleased && elapsed > 120) {
-                    if (spaceNow) { reset(); requestId = requestAnimationFrame(update); return; }
+                    if (spaceNow) { cancelAnimationFrame(requestId); window.location.href = '/juego'; return; }
                     if (escNow)   { cancelAnimationFrame(requestId); window.location.href = '/about'; return; }
                 }
             }
