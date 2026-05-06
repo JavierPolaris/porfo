@@ -14,7 +14,7 @@ const BOSS_MAX_HP     = 8;
 const PLAYER_MAX_LIVES = 3;
 const WIDTH  = 800;
 const HEIGHT = 600;
-const FLOOR  = HEIGHT - 50;   // 550 — tile de suelo ocupa exactamente los últimos 50px
+const FLOOR  = 460;           // tile de hierba aquí + relleno marrón hasta el fondo
 
 export default function Juego2() {
     const touchLeft  = useRef(false);
@@ -187,7 +187,7 @@ export default function Juego2() {
             terrain = [];
             terrain.push({ x: 0,       y: 0,    width: 1,     height: HEIGHT });
             terrain.push({ x: WIDTH-1, y: 0,    width: 1,     height: HEIGHT });
-            terrain.push({ x: 0, y: FLOOR, width: WIDTH, height: 50 });
+            terrain.push({ x: 0, y: FLOOR, width: WIDTH, height: HEIGHT - FLOOR });
 
             // 3 plataformas
             terrain.push({ x: 75,  y: 420, width: 150, height: 40 });
@@ -471,6 +471,10 @@ export default function Juego2() {
             });
 
             /* ── Dibujar suelo y plataformas ── */
+            // relleno de tierra bajo el tile de hierba
+            ctx.fillStyle = '#7a4520';
+            ctx.fillRect(0, FLOOR + 50, WIDTH, HEIGHT - FLOOR - 50);
+            // fila de tiles de hierba
             for (let px = 0; px < WIDTH; px += 50) {
                 ctx.drawImage(imgSuelo, px, FLOOR, 50, 50);
             }
