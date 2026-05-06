@@ -190,9 +190,9 @@ export default function Juego2() {
             terrain.push({ x: 0, y: FLOOR, width: WIDTH, height: HEIGHT - FLOOR });
 
             // 3 plataformas
-            terrain.push({ x: 75,  y: 420, width: 150, height: 40 });
-            terrain.push({ x: 575, y: 420, width: 150, height: 40 });
-            terrain.push({ x: 300, y: 310, width: 200, height: 40 });
+            terrain.push({ x: 75,  y: 330, width: 150, height: 40 });
+            terrain.push({ x: 575, y: 330, width: 150, height: 40 });
+            terrain.push({ x: 300, y: 210, width: 200, height: 40 });
         }
 
         reset();
