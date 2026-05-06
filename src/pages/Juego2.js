@@ -12,9 +12,6 @@ import Pantalla from '../assets/img/fullscreen.png';
 
 const BOSS_MAX_HP     = 8;
 const PLAYER_MAX_LIVES = 3;
-const WIDTH  = 800;
-const HEIGHT = 600;
-const FLOOR  = HEIGHT - 2;
 
 export default function Juego2() {
     const touchLeft  = useRef(false);
@@ -78,6 +75,7 @@ export default function Juego2() {
 
     useEffect(() => {
         let requestId;
+        let WIDTH, HEIGHT, FLOOR;
         let keys         = [];
         let terrain      = [];
         let bossBullets  = [];
@@ -141,8 +139,11 @@ export default function Juego2() {
             imgFondo    = new Image(); imgFondo.src    = Fondo;
 
             const canvas = document.getElementById('canvas');
-            canvas.width  = WIDTH;
-            canvas.height = HEIGHT;
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+            WIDTH  = canvas.width;
+            HEIGHT = canvas.height;
+            FLOOR  = HEIGHT - 2;
 
             status         = 'playing';
             bossHP         = BOSS_MAX_HP;
@@ -189,12 +190,10 @@ export default function Juego2() {
             terrain.push({ x: WIDTH - 1, y: 0,     width: 1,     height: HEIGHT });
             terrain.push({ x: 0,        y: FLOOR,  width: WIDTH, height: 20     });
 
-            // 3 plataformas — misma altura que nivel 1 (40px), bien anchas y alcanzables
-            // Desde suelo (player.y≈548, pico≈455) → plataformas y=480 alcanzables
-            // Desde y=480 (player.y≈430, pico≈337)  → plataforma  y=360 alcanzable
-            terrain.push({ x: 75,  y: 480, width: 150, height: 40 });  // izquierda baja (3 tiles)
-            terrain.push({ x: 575, y: 480, width: 150, height: 40 });  // derecha baja  (3 tiles)
-            terrain.push({ x: 300, y: 360, width: 200, height: 40 });  // centro alta   (4 tiles)
+            // 3 plataformas relativas a la pantalla
+            terrain.push({ x: 75,              y: HEIGHT - 120, width: 150, height: 40 });
+            terrain.push({ x: WIDTH - 225,      y: HEIGHT - 120, width: 150, height: 40 });
+            terrain.push({ x: WIDTH / 2 - 100,  y: HEIGHT - 240, width: 200, height: 40 });
         }
 
         reset();

@@ -1251,14 +1251,17 @@ export default function Juego() {
             </div>
 
             <div className="canvas-container">
-                <canvas id="canvas" ref={canvasRef} />
-                <div className="touch-controls">
-                    <div className="joystick-base" id="joystick">
-                        <div className="joystick-shaft"></div>
-                    </div>
-                    <div className="buttons">
-                        <button className="jump-button" id="jump-button">A</button>
-                        <button className="shoot-button" id="shoot-button">B</button>
+                <div className="canvas-bg" style={{ backgroundImage: `url(${Fondo})` }} />
+                <div className="game-frame">
+                    <canvas id="canvas" ref={canvasRef} />
+                    <div className="touch-controls">
+                        <div className="joystick-base" id="joystick">
+                            <div className="joystick-shaft"></div>
+                        </div>
+                        <div className="buttons">
+                            <button className="jump-button" id="jump-button">A</button>
+                            <button className="shoot-button" id="shoot-button">B</button>
+                        </div>
                     </div>
                 </div>
             </div>
