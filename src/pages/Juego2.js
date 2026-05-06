@@ -9,7 +9,7 @@ import Stop from '../assets/img/stop.png';
 import Musica from '../assets/music/musica.mp3';
 import Pantalla from '../assets/img/fullscreen.png';
 
-const BOSS_MAX_HP = 6;
+const BOSS_MAX_HP = 8;
 const WIDTH  = 800;
 const HEIGHT = 600;
 const FLOOR  = HEIGHT - 2;
@@ -76,16 +76,18 @@ export default function Juego2() {
 
     useEffect(() => {
         let requestId;
-        let keys        = [];
-        let terrain     = [];
-        let bossBullets = [];
-        let shockwaves  = [];
-        let frameCount  = 0;
+        let keys         = [];
+        let terrain      = [];
+        let bossBullets  = [];
+        let shockwaves   = [];
+        let frameCount   = 0;
         let bossHitFlash = 0;
+        let winStartFrame = 0;
+        let jumpKeyPrev  = false;  // edge-detection para no repetir salto al mantener pulsado
 
-        const friction      = 0.8;
-        const gravity       = 0.2;   // igual que nivel 1 → jugador fluido
-        const bossGravity   = 0.5;   // el jefe cae más rápido (más pesado)
+        const friction    = 0.8;
+        const gravity     = 0.2;   // igual que nivel 1 → protagonista fluido
+        const bossGravity = 0.5;   // jefe más pesado
 
         let status, player, boss, bullet, bossHP;
         let imgYo, imgYoLeft, imgPina, imgSuelo, imgFondo;
@@ -117,10 +119,11 @@ export default function Juego2() {
         }
 
         function resetPlayer() {
-            player.x    = 60;
-            player.y    = FLOOR - 60;
-            player.velX = 0;
-            player.velY = 0;
+            player.x      = 60;
+            player.y      = FLOOR - 60;
+            player.velX   = 0;
+            player.velY   = 0;
+            player.jumpsLeft = 2;
         }
 
         function reset() {
@@ -134,13 +137,15 @@ export default function Juego2() {
             canvas.width  = WIDTH;
             canvas.height = HEIGHT;
 
-            status       = 'playing';
-            bossHP       = BOSS_MAX_HP;
-            bossBullets  = [];
-            shockwaves   = [];
-            bossHitFlash = 0;
-            frameCount   = 0;
-            keys         = [];
+            status        = 'playing';
+            bossHP        = BOSS_MAX_HP;
+            bossBullets   = [];
+            shockwaves    = [];
+            bossHitFlash  = 0;
+            winStartFrame = 0;
+            frameCount    = 0;
+            jumpKeyPrev   = false;
+            keys          = [];
 
             player = {
                 x: 60, y: FLOOR - 60,
@@ -148,6 +153,7 @@ export default function Juego2() {
                 speed: 3, velX: 0, velY: 0,
                 jumping: false, grounded: false,
                 facing: 'right',
+                jumpsLeft: 2,   // doble salto como en nivel 2 de Metal Slug
             };
 
             boss = {
@@ -157,7 +163,7 @@ export default function Juego2() {
                 velX: 0, velY: 0,
                 grounded: true,
                 direction: 'left',
-                state: 'walk',      // 'walk' | 'charge' | 'jump'
+                state: 'walk',
                 stateTimer: 0,
                 nextAction: 150,
                 shotTimer: 60,
@@ -174,11 +180,15 @@ export default function Juego2() {
             terrain.push({ x: 0,        y: 0,     width: 1,     height: HEIGHT });
             terrain.push({ x: WIDTH - 1, y: 0,     width: 1,     height: HEIGHT });
             terrain.push({ x: 0,        y: FLOOR,  width: WIDTH, height: 20     });
-            terrain.push({ x: 80,  y: 420, width: 130, height: 20 });
-            terrain.push({ x: 590, y: 420, width: 130, height: 20 });
-            terrain.push({ x: 290, y: 310, width: 220, height: 20 });
-            terrain.push({ x: 60,  y: 200, width: 110, height: 20 });
-            terrain.push({ x: 630, y: 200, width: 110, height: 20 });
+
+            // Plataformas en escalera — cada nivel alcanzable desde el anterior
+            // con salto = speed*2 = 6, gravity = 0.2 → altura máx ~93 px por salto
+            terrain.push({ x: 60,  y: 475, width: 200, height: 20 }); // paso 1 izq (desde suelo)
+            terrain.push({ x: 540, y: 475, width: 200, height: 20 }); // paso 1 der
+            terrain.push({ x: 240, y: 358, width: 320, height: 20 }); // paso 2 centro
+            terrain.push({ x: 60,  y: 242, width: 180, height: 20 }); // paso 3 izq
+            terrain.push({ x: 560, y: 242, width: 180, height: 20 }); // paso 3 der
+            terrain.push({ x: 270, y: 132, width: 260, height: 20 }); // paso 4 alto
         }
 
         reset();
@@ -234,12 +244,18 @@ export default function Juego2() {
             const ctx = canvas.getContext('2d');
             frameCount++;
 
-            /* ── Player input ── */
-            if ((keys[38] || keys[87] || touchJump.current) && !player.jumping && player.grounded) {
+            /* ── Entrada del jugador ── */
+
+            // Salto con edge-detection (no se repite al mantener pulsado)
+            const jumpKeyNow = !!(keys[38] || keys[87] || touchJump.current);
+            if (jumpKeyNow && !jumpKeyPrev && player.jumpsLeft > 0) {
+                player.velY     = -player.speed * 2;
                 player.jumping  = true;
                 player.grounded = false;
-                player.velY     = -player.speed * 2;
+                player.jumpsLeft--;
             }
+            jumpKeyPrev = jumpKeyNow;
+
             if (keys[39] || keys[68] || touchRight.current) {
                 player.facing = 'right';
                 if (player.velX < player.speed) player.velX++;
@@ -248,36 +264,45 @@ export default function Juego2() {
                 player.facing = 'left';
                 if (player.velX > -player.speed) player.velX--;
             }
-            if ((keys[32] || touchShoot.current) && !bullet.active) {
+            if ((keys[32] || touchShoot.current) && !bullet.active && status === 'playing') {
                 bullet.active    = true;
                 bullet.direction = player.facing;
                 bullet.x = player.facing === 'right' ? player.x + player.width : player.x - bullet.width;
                 bullet.y = player.y + 15;
             }
 
-            /* ── Physics ── */
+            /* ── Física del jugador ── */
             player.velX *= friction;
             player.velY += gravity;
 
-            /* ── Background ── */
+            /* ── Fondo ── */
             ctx.clearRect(0, 0, WIDTH, HEIGHT);
             ctx.drawImage(imgFondo, 0, 0, WIDTH, HEIGHT);
             ctx.fillStyle = 'rgba(8, 0, 25, 0.28)';
             ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-            /* ── Player–terrain collision ── */
+            /* ── Colisión jugador-terreno ── */
             player.grounded = false;
             for (let i = 0; i < terrain.length; i++) {
                 const dir = colCheck(player, terrain[i]);
-                if (dir === 'l' || dir === 'r') { player.velX = 0; }
-                else if (dir === 't')            { player.velY *= -0.3; }
-                else if (dir === 'b')            { player.grounded = true; player.jumping = false; player.velY = 0; }
+                if (dir === 'l' || dir === 'r') {
+                    player.velX = 0;
+                } else if (dir === 't') {
+                    player.velY *= -0.3;
+                } else if (dir === 'b') {
+                    player.grounded = true;
+                    player.jumping  = false;
+                    player.jumpsLeft = 2;   // reset doble salto al aterrizar
+                }
                 if (bullet.active && colCheck(bullet, terrain[i])) {
                     bullet.active = false; bullet.x = -100;
                 }
             }
 
-            /* Filter boss bullets that hit terrain */
+            // Nivel 1: aplica velY=0 antes del movimiento cuando grounded
+            if (player.grounded) player.velY = 0;
+
+            /* Filtrar balas del boss que chocan con terreno */
             bossBullets = bossBullets.filter(bb => {
                 for (let i = 0; i < terrain.length; i++) {
                     if (colCheck(bb, terrain[i])) return false;
@@ -288,7 +313,7 @@ export default function Juego2() {
             player.x += player.velX;
             player.y += player.velY;
 
-            /* ── Player bullet ── */
+            /* ── Bala del jugador ── */
             if (bullet.active) {
                 bullet.x += bullet.direction === 'right' ? bullet.speed : -bullet.speed;
                 if (bullet.x < -50 || bullet.x > WIDTH + 50) bullet.active = false;
@@ -297,15 +322,19 @@ export default function Juego2() {
                     bullet.active = false; bullet.x = -100;
                     bossHP--;
                     bossHitFlash = 15;
-                    if (bossHP <= 0) { boss.alive = false; status = 'win'; }
+                    if (bossHP <= 0) {
+                        boss.alive    = false;
+                        status        = 'win';
+                        winStartFrame = frameCount;
+                    }
                 }
             }
 
-            /* ── Boss AI (Metal Slug style) ── */
+            /* ── IA del boss (Metal Slug) ── */
             if (boss.alive) {
-                const phase2      = bossHP <= 3;
-                const spd         = phase2 ? boss.baseSpeed * 1.9 : boss.baseSpeed;
-                const shotInterval = phase2 ? 72 : 130;
+                const phase2       = bossHP <= 4;
+                const spd          = phase2 ? boss.baseSpeed * 1.8 : boss.baseSpeed;
+                const shotInterval = phase2 ? 80 : 140;
 
                 if (!boss.grounded) boss.velY += bossGravity;
 
@@ -332,7 +361,7 @@ export default function Juego2() {
                         break;
 
                     case 'charge':
-                        boss.velX = boss.direction === 'right' ? spd * 4.2 : -spd * 4.2;
+                        boss.velX = boss.direction === 'right' ? spd * 4 : -spd * 4;
                         if (boss.stateTimer >= boss.nextAction ||
                             boss.x + boss.width >= WIDTH - 15 || boss.x <= 15) {
                             boss.state      = 'walk';
@@ -346,26 +375,24 @@ export default function Juego2() {
                         boss.velX = 0;
                         break;
 
-                    default:
-                        break;
+                    default: break;
                 }
 
-                /* Move */
                 boss.x += boss.velX;
                 boss.y += boss.velY;
 
-                /* Ground landing */
+                /* Aterrizaje del boss */
                 if (boss.y + boss.height >= FLOOR) {
                     const wasAirborne = !boss.grounded;
-                    boss.y      = FLOOR - boss.height;
-                    boss.velY   = 0;
+                    boss.y        = FLOOR - boss.height;
+                    boss.velY     = 0;
                     boss.grounded = true;
                     if (wasAirborne && boss.state === 'jump') {
                         shockwaves.push({
                             x: boss.x - 55,
-                            y: FLOOR - 20,
+                            y: FLOOR - 22,
                             width: boss.width + 110,
-                            height: 20,
+                            height: 22,
                             ttl: 50, maxTtl: 50,
                         });
                         boss.state      = 'walk';
@@ -376,7 +403,6 @@ export default function Juego2() {
                     boss.grounded = false;
                 }
 
-                /* Wall clamp */
                 if (boss.x < 15) {
                     boss.x = 15; boss.direction = 'right';
                     if (boss.state === 'charge') { boss.state = 'walk'; boss.stateTimer = 0; boss.nextAction = 100; boss.velX = 0; }
@@ -386,7 +412,7 @@ export default function Juego2() {
                     if (boss.state === 'charge') { boss.state = 'walk'; boss.stateTimer = 0; boss.nextAction = 100; boss.velX = 0; }
                 }
 
-                /* Shoot horizontal fireballs toward player */
+                /* Disparos horizontales */
                 boss.shotTimer++;
                 if (boss.shotTimer >= shotInterval && boss.state !== 'jump') {
                     boss.shotTimer = 0;
@@ -411,7 +437,7 @@ export default function Juego2() {
                 if (colCheck(player, boss)) resetPlayer();
             }
 
-            /* ── Move boss bullets ── */
+            /* ── Balas del boss ── */
             bossBullets = bossBullets.filter(bb => {
                 bb.x += bb.velX;
                 bb.y += bb.velY;
@@ -428,7 +454,7 @@ export default function Juego2() {
                 return sw.ttl > 0;
             });
 
-            /* ── Draw platforms ── */
+            /* ── Dibujar plataformas ── */
             for (let i = 3; i < terrain.length; i++) {
                 const t = terrain[i];
                 for (let px = t.x; px < t.x + t.width; px += 50) {
@@ -436,11 +462,10 @@ export default function Juego2() {
                 }
             }
 
-            /* ── Draw shockwaves ── */
+            /* ── Dibujar shockwaves ── */
             shockwaves.forEach(sw => {
-                const alpha = sw.ttl / sw.maxTtl;
                 ctx.save();
-                ctx.globalAlpha = alpha * 0.88;
+                ctx.globalAlpha = sw.ttl / sw.maxTtl * 0.88;
                 const g = ctx.createLinearGradient(sw.x, sw.y, sw.x, sw.y + sw.height);
                 g.addColorStop(0, '#ffee44');
                 g.addColorStop(1, '#ff4400');
@@ -449,7 +474,7 @@ export default function Juego2() {
                 ctx.restore();
             });
 
-            /* ── Draw boss bullets ── */
+            /* ── Dibujar balas del boss ── */
             bossBullets.forEach(bb => {
                 ctx.save();
                 const grad = ctx.createRadialGradient(
@@ -458,7 +483,7 @@ export default function Juego2() {
                 );
                 grad.addColorStop(0, '#ffffff');
                 grad.addColorStop(0.4, '#ff8800');
-                grad.addColorStop(1, 'rgba(255, 0, 0, 0)');
+                grad.addColorStop(1, 'rgba(255,0,0,0)');
                 ctx.fillStyle = grad;
                 ctx.beginPath();
                 ctx.arc(bb.x + bb.width / 2, bb.y + bb.height / 2, bb.width / 2, 0, Math.PI * 2);
@@ -466,7 +491,7 @@ export default function Juego2() {
                 ctx.restore();
             });
 
-            /* ── Draw boss ── */
+            /* ── Dibujar boss ── */
             if (boss.alive) {
                 if (bossHitFlash > 0) {
                     ctx.save();
@@ -479,60 +504,68 @@ export default function Juego2() {
                 ctx.drawImage(imgPina, boss.x, boss.y, boss.width, boss.height);
             }
 
-            /* ── Draw player bullet ── */
+            /* ── Dibujar bala del jugador ── */
             if (bullet.active) {
                 ctx.fillStyle = '#FDDD32';
                 ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
             }
 
-            /* ── Draw player ── */
+            /* ── Dibujar jugador ── */
             if (player.facing === 'right') ctx.drawImage(imgYo,     player.x, player.y, player.width, player.height);
             else                           ctx.drawImage(imgYoLeft, player.x, player.y, player.width, player.height);
 
-            /* ── HUD (drawn last so nothing covers it) ── */
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.72)';
+            /* ── HUD arriba (siempre encima de todo) ── */
+            ctx.fillStyle = 'rgba(0,0,0,0.72)';
             ctx.fillRect(0, 0, WIDTH, 46);
             ctx.fillStyle = '#ff9b00';
             ctx.fillRect(0, 46, WIDTH, 2);
 
-            const heartGap = 28;
-            const hudCenterX = WIDTH / 2;
-            const heartStartX = hudCenterX - (BOSS_MAX_HP * heartGap) / 2 + 4;
+            const heartGap    = 28;
+            const heartStartX = WIDTH / 2 - (BOSS_MAX_HP * heartGap) / 2 + 4;
             ctx.font = '20px serif';
             for (let h = 0; h < BOSS_MAX_HP; h++) {
                 ctx.fillStyle = h < bossHP ? '#ff2255' : 'rgba(255,255,255,0.12)';
                 ctx.fillText('♥', heartStartX + h * heartGap, 34);
             }
-
-            const barW = 220;
-            const barX = hudCenterX - barW / 2;
+            const barW = 260;
+            const barX = WIDTH / 2 - barW / 2;
             ctx.fillStyle = 'rgba(0,0,0,0.55)';
             ctx.fillRect(barX, 8, barW, 10);
             const pct = bossHP / BOSS_MAX_HP;
-            ctx.fillStyle = pct > 0.6 ? '#22dd44' : pct > 0.3 ? '#ffaa00' : '#ff2200';
+            ctx.fillStyle = pct > 0.5 ? '#22dd44' : pct > 0.25 ? '#ffaa00' : '#ff2200';
             ctx.fillRect(barX, 8, barW * pct, 10);
             ctx.strokeStyle = 'rgba(255,255,255,0.22)';
             ctx.lineWidth   = 1;
             ctx.strokeRect(barX, 8, barW, 10);
 
-            /* ── Win screen ── */
+            /* ── Pantalla de victoria ── */
             if (status === 'win') {
                 ctx.save();
-                ctx.fillStyle = `rgba(0,0,0,${Math.min(0.8, 0.3 + frameCount * 0.008)})`;
+                const fadeIn = Math.min(0.85, (frameCount - winStartFrame) * 0.012);
+                ctx.fillStyle = `rgba(0,0,0,${fadeIn})`;
                 ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
                 ctx.textAlign = 'center';
-                ctx.fillStyle = `hsl(${frameCount * 6 % 360}, 100%, 60%)`;
+                ctx.fillStyle = `hsl(${frameCount * 5 % 360}, 100%, 60%)`;
                 ctx.font      = 'bold 28px "Press Start 2P", monospace';
                 ctx.fillText('¡DERROTADA!', WIDTH / 2, HEIGHT / 2 - 50);
+
                 ctx.fillStyle = '#FFD700';
                 ctx.font      = '14px "Press Start 2P", monospace';
                 ctx.fillText('La Piña ha caído.', WIDTH / 2, HEIGHT / 2);
-                ctx.fillStyle = '#ffffff';
-                ctx.font      = '11px "Press Start 2P", monospace';
-                ctx.fillText('Pulsa ESPACIO para continuar', WIDTH / 2, HEIGHT / 2 + 40);
+
+                // El aviso solo aparece cuando ya puede continuar (después del delay)
+                if (frameCount > winStartFrame + 120) {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font      = '11px "Press Start 2P", monospace';
+                    ctx.fillText('Pulsa ESPACIO para continuar', WIDTH / 2, HEIGHT / 2 + 50);
+                }
+
                 ctx.textAlign = 'left';
                 ctx.restore();
-                if (keys[32] || touchShoot.current) {
+
+                // Solo acepta input después de 120 frames (2 segundos) para que no se salte
+                if (frameCount > winStartFrame + 120 && (keys[32] || touchShoot.current)) {
                     cancelAnimationFrame(requestId);
                     window.location.href = '/about';
                     return;
