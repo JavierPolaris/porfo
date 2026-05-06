@@ -4,6 +4,7 @@ import YoLeft from '../assets/img/yoLeft.png';
 import Pina     from '../assets/img/pinaDemoniaca.png';
 import PinaSmall from '../assets/img/pinaSmall.png';
 import Suelo from '../assets/img/suelo1.png';
+import SGruta from '../assets/img/sueloC.png';
 import Fondo from '../assets/img/fondo.png';
 import Play from '../assets/img/play.png';
 import Stop from '../assets/img/stop.png';
@@ -92,7 +93,7 @@ export default function Juego2() {
         const bossGravity = 0.5;
 
         let status, player, boss, bullet, bossHP, playerLives;
-        let imgYo, imgYoLeft, imgPina, imgPinaSmall, imgSuelo, imgFondo;
+        let imgYo, imgYoLeft, imgPina, imgPinaSmall, imgSuelo, imgSueloC, imgFondo;
 
         function isTouchDev() {
             return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -138,6 +139,7 @@ export default function Juego2() {
             imgPina     = new Image(); imgPina.src     = Pina;
             imgPinaSmall= new Image(); imgPinaSmall.src= PinaSmall;
             imgSuelo    = new Image(); imgSuelo.src    = Suelo;
+            imgSueloC   = new Image(); imgSueloC.src   = SGruta;
             imgFondo    = new Image(); imgFondo.src    = Fondo;
 
             const canvas = document.getElementById('canvas');
@@ -470,22 +472,18 @@ export default function Juego2() {
                 return sw.ttl > 0;
             });
 
-            /* ── Dibujar suelo y plataformas ── */
-            // relleno sólido de toda el área de suelo (tapa cualquier hueco entre tiles)
-            ctx.fillStyle = '#7a4520';
-            ctx.fillRect(0, FLOOR, WIDTH, HEIGHT - FLOOR);
-            // tiles de hierba solapados para franja continua sin juntas visibles
-            for (let px = 0; px <= WIDTH; px += 48) {
-                ctx.drawImage(imgSuelo, Math.floor(px), FLOOR, 52, 52);
-            }
-            // plataformas
+            /* ── Dibujar suelo principal ── */
+            // fila de hierba
+            for (let px = -5; px < WIDTH; px += 40) ctx.drawImage(imgSuelo,  px, FLOOR,      50, 50);
+            // filas de tierra hasta el fondo
+            for (let py = FLOOR + 40; py < HEIGHT; py += 40)
+                for (let px = -5; px < WIDTH; px += 40) ctx.drawImage(imgSueloC, px, py, 50, 50);
+
+            /* ── Dibujar plataformas ── */
             for (let i = 3; i < terrain.length; i++) {
                 const t = terrain[i];
-                ctx.fillStyle = '#7a4520';
-                ctx.fillRect(t.x, t.y, t.width, t.height + 20);
-                for (let px = t.x; px <= t.x + t.width; px += 48) {
-                    ctx.drawImage(imgSuelo, Math.floor(px), t.y, 52, 52);
-                }
+                for (let px = t.x - 5; px < t.x + t.width; px += 40) ctx.drawImage(imgSuelo,  px, t.y,      50, 50);
+                for (let px = t.x - 5; px < t.x + t.width; px += 40) ctx.drawImage(imgSueloC, px, t.y + 40, 50, 50);
             }
 
             /* ── Dibujar shockwaves ── */
