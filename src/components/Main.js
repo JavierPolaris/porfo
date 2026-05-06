@@ -13,7 +13,7 @@ class Main extends Component {
       return (
         <div>
           
-          <Routes basename={process.env.PUBLIC_URL}>
+          <Routes>
             
             <Route path='/' element={<Home />} />
             <Route path='/homeJuego' element={<HomeJ />} />
