@@ -3,39 +3,42 @@ const nodemailer = require('nodemailer');
 const cors = require('cors');
 const app = express();
 
-// Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'https://porfo-rho.vercel.app',
+  methods: ['POST'],
+}));
 app.use(express.json());
 
-// Ruta para enviar correos
 app.post('/api/send-email', (req, res) => {
   const { email, nombre, mensaje } = req.body;
-  
-  // Configuración de Nodemailer
-  let transporter = nodemailer.createTransport({
+
+  if (!email || !nombre || !mensaje) {
+    return res.status(400).send('Faltan campos requeridos');
+  }
+
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'javierrojocanton@gmail.com',
-      pass: 'scgu azsg mtsz fitg'
-    }
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
   });
 
-  let mailOptions = {
-    from: `"${nombre}" <${email}>`,
-    to: 'javierrojocanton@gmail.com',
+  const mailOptions = {
+    from: `"${nombre}" <${process.env.EMAIL_USER}>`,
+    to: process.env.EMAIL_USER,
+    replyTo: email,
     subject: `Nuevo mensaje de ${nombre}`,
-     text: `Nombre: ${nombre}\nCorreo: ${email}\nMensaje: ${mensaje}`
+    text: `Nombre: ${nombre}\nCorreo: ${email}\nMensaje: ${mensaje}`,
   };
 
-
-  transporter.sendMail(mailOptions, function (error, info) {
+  transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log(error);
-      res.status(500).send('Error al enviar el correo');
-    } else {
-      console.log('Correo enviado: ' + info.response);
-      res.status(200).send('Correo enviado correctamente');
+      console.error('Error enviando correo:', error.message);
+      return res.status(500).send('Error al enviar el correo');
     }
+    console.log('Correo enviado:', info.response);
+    res.status(200).send('Correo enviado correctamente');
   });
 });
 

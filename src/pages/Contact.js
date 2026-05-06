@@ -79,13 +79,13 @@ function Contact() {
                                 <p className='pContact'>Estoy deseando que hablemos!!</p>
                                 <section id='rrss1' className='contact-section'>
                                     <div className='contact-links'>
-                                        <a href='https://www.linkedin.com/in/javierg-rcanton/' target='_blank' className='contact-details'>
+                                        <a href='https://www.linkedin.com/in/javierg-rcanton/' target='_blank' rel='noreferrer' className='contact-details'>
                                             Linkedin
                                         </a>
-                                        <a href='https://github.com/JavierPolaris' target='_blank' className='contact-details'>
+                                        <a href='https://github.com/JavierPolaris' target='_blank' rel='noreferrer' className='contact-details'>
                                             Github
                                         </a>
-                                        <a href='https://twitter.com/JavierPolaris' target='_blank' className='contact-details'>
+                                        <a href='https://twitter.com/JavierPolaris' target='_blank' rel='noreferrer' className='contact-details'>
                                             Twitter
                                         </a>
                                     </div>
