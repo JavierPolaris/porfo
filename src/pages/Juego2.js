@@ -473,16 +473,16 @@ export default function Juego2() {
             });
 
             /* ── Dibujar suelo principal ── */
-            // fila de hierba
-            for (let px = -5; px < WIDTH; px += 40) ctx.drawImage(imgSuelo,  px, FLOOR,      50, 50);
+            // fila de hierba 10px por encima del FLOOR para que la hierba llegue al tobillo
+            for (let px = -5; px < WIDTH; px += 40) ctx.drawImage(imgSuelo,  px, FLOOR - 10, 50, 50);
             // filas de tierra hasta el fondo
-            for (let py = FLOOR + 40; py < HEIGHT; py += 40)
+            for (let py = FLOOR + 30; py < HEIGHT; py += 40)
                 for (let px = -5; px < WIDTH; px += 40) ctx.drawImage(imgSueloC, px, py, 50, 50);
 
             /* ── Dibujar plataformas ── */
             for (let i = 3; i < terrain.length; i++) {
                 const t = terrain[i];
-                for (let px = t.x - 5; px < t.x + t.width; px += 40) ctx.drawImage(imgSuelo, px, t.y, 50, 50);
+                for (let px = t.x - 5; px < t.x + t.width; px += 40) ctx.drawImage(imgSuelo, px, t.y - 10, 50, 50);
             }
 
             /* ── Dibujar shockwaves ── */
