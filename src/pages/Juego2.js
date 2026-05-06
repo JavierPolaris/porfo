@@ -9,7 +9,8 @@ import Stop from '../assets/img/stop.png';
 import Musica from '../assets/music/musica.mp3';
 import Pantalla from '../assets/img/fullscreen.png';
 
-const BOSS_MAX_HP = 8;
+const BOSS_MAX_HP     = 8;
+const PLAYER_MAX_LIVES = 3;
 const WIDTH  = 800;
 const HEIGHT = 600;
 const FLOOR  = HEIGHT - 2;
@@ -82,14 +83,14 @@ export default function Juego2() {
         let shockwaves   = [];
         let frameCount   = 0;
         let bossHitFlash = 0;
-        let winStartFrame = 0;
-        let jumpKeyPrev  = false;  // edge-detection para no repetir salto al mantener pulsado
+        let winStartFrame  = -999;
+        let winKeyReleased = false;   // obliga a soltar Space antes de continuar en la pantalla de victoria
 
         const friction    = 0.8;
-        const gravity     = 0.2;   // igual que nivel 1 → protagonista fluido
-        const bossGravity = 0.5;   // jefe más pesado
+        const gravity     = 0.2;   // idéntico al nivel 1
+        const bossGravity = 0.5;
 
-        let status, player, boss, bullet, bossHP;
+        let status, player, boss, bullet, bossHP, playerLives;
         let imgYo, imgYoLeft, imgPina, imgSuelo, imgFondo;
 
         function isTouchDev() {
@@ -118,12 +119,18 @@ export default function Juego2() {
                    A.y < B.y + B.height && A.y + A.height > B.y;
         }
 
-        function resetPlayer() {
-            player.x      = 60;
-            player.y      = FLOOR - 60;
-            player.velX   = 0;
-            player.velY   = 0;
-            player.jumpsLeft = 2;
+        // Pierde una vida. Si no quedan vidas → game over
+        function loseLife() {
+            playerLives--;
+            player.x    = 60;
+            player.y    = FLOOR - 60;
+            player.velX = 0;
+            player.velY = 0;
+            player.jumping  = false;
+            player.grounded = false;
+            // Al reaparecer el salto se puede usar de inmediato (resetea estado)
+            player.jumpWasDown = false;
+            if (playerLives <= 0) status = 'gameover';
         }
 
         function reset() {
@@ -137,15 +144,16 @@ export default function Juego2() {
             canvas.width  = WIDTH;
             canvas.height = HEIGHT;
 
-            status        = 'playing';
-            bossHP        = BOSS_MAX_HP;
-            bossBullets   = [];
-            shockwaves    = [];
-            bossHitFlash  = 0;
-            winStartFrame = 0;
-            frameCount    = 0;
-            jumpKeyPrev   = false;
-            keys          = [];
+            status         = 'playing';
+            bossHP         = BOSS_MAX_HP;
+            playerLives    = PLAYER_MAX_LIVES;
+            bossBullets    = [];
+            shockwaves     = [];
+            bossHitFlash   = 0;
+            winStartFrame  = -999;
+            winKeyReleased = false;
+            frameCount     = 0;
+            keys           = [];
 
             player = {
                 x: 60, y: FLOOR - 60,
@@ -153,12 +161,12 @@ export default function Juego2() {
                 speed: 3, velX: 0, velY: 0,
                 jumping: false, grounded: false,
                 facing: 'right',
-                jumpsLeft: 2,   // doble salto como en nivel 2 de Metal Slug
+                jumpWasDown: false,   // edge-detection limpio: ¿estaba pulsado el salto el frame anterior?
             };
 
             boss = {
-                x: WIDTH - 210, y: FLOOR - 95,
-                width: 95, height: 95,
+                x: WIDTH - 210, y: FLOOR - 85,
+                width: 85, height: 85,  // 85px → el jugador puede saltarlo desde el suelo
                 baseSpeed: 1.4,
                 velX: 0, velY: 0,
                 grounded: true,
@@ -181,14 +189,12 @@ export default function Juego2() {
             terrain.push({ x: WIDTH - 1, y: 0,     width: 1,     height: HEIGHT });
             terrain.push({ x: 0,        y: FLOOR,  width: WIDTH, height: 20     });
 
-            // Plataformas en escalera — cada nivel alcanzable desde el anterior
-            // con salto = speed*2 = 6, gravity = 0.2 → altura máx ~93 px por salto
-            terrain.push({ x: 60,  y: 475, width: 200, height: 20 }); // paso 1 izq (desde suelo)
-            terrain.push({ x: 540, y: 475, width: 200, height: 20 }); // paso 1 der
-            terrain.push({ x: 240, y: 358, width: 320, height: 20 }); // paso 2 centro
-            terrain.push({ x: 60,  y: 242, width: 180, height: 20 }); // paso 3 izq
-            terrain.push({ x: 560, y: 242, width: 180, height: 20 }); // paso 3 der
-            terrain.push({ x: 270, y: 132, width: 260, height: 20 }); // paso 4 alto
+            // 3 plataformas — misma altura que nivel 1 (40px), bien anchas y alcanzables
+            // Desde suelo (player.y≈548, pico≈455) → plataformas y=480 alcanzables
+            // Desde y=480 (player.y≈430, pico≈337)  → plataforma  y=360 alcanzable
+            terrain.push({ x: 60,  y: 480, width: 200, height: 40 });  // izquierda baja
+            terrain.push({ x: 540, y: 480, width: 200, height: 40 });  // derecha baja
+            terrain.push({ x: 280, y: 360, width: 240, height: 40 });  // centro alta
         }
 
         reset();
@@ -244,18 +250,18 @@ export default function Juego2() {
             const ctx = canvas.getContext('2d');
             frameCount++;
 
-            /* ── Entrada del jugador ── */
-
-            // Salto con edge-detection (no se repite al mantener pulsado)
-            const jumpKeyNow = !!(keys[38] || keys[87] || touchJump.current);
-            if (jumpKeyNow && !jumpKeyPrev && player.jumpsLeft > 0) {
-                player.velY     = -player.speed * 2;
+            /* ── Salto — exactamente igual que nivel 1 ── */
+            // Edge-detection via jumpWasDown: evita saltar al mantener pulsado,
+            // pero se resetea en loseLife() para que al reaparecer funcione de inmediato.
+            const jumpDown = !!(keys[38] || keys[87] || touchJump.current);
+            if (jumpDown && !player.jumpWasDown && !player.jumping && player.grounded) {
                 player.jumping  = true;
                 player.grounded = false;
-                player.jumpsLeft--;
+                player.velY     = -player.speed * 2;
             }
-            jumpKeyPrev = jumpKeyNow;
+            player.jumpWasDown = jumpDown;
 
+            /* ── Movimiento horizontal ── */
             if (keys[39] || keys[68] || touchRight.current) {
                 player.facing = 'right';
                 if (player.velX < player.speed) player.velX++;
@@ -264,6 +270,8 @@ export default function Juego2() {
                 player.facing = 'left';
                 if (player.velX > -player.speed) player.velX--;
             }
+
+            /* ── Disparo — Space solo dispara cuando se está jugando ── */
             if ((keys[32] || touchShoot.current) && !bullet.active && status === 'playing') {
                 bullet.active    = true;
                 bullet.direction = player.facing;
@@ -271,7 +279,7 @@ export default function Juego2() {
                 bullet.y = player.y + 15;
             }
 
-            /* ── Física del jugador ── */
+            /* ── Física ── */
             player.velX *= friction;
             player.velY += gravity;
 
@@ -281,7 +289,7 @@ export default function Juego2() {
             ctx.fillStyle = 'rgba(8, 0, 25, 0.28)';
             ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-            /* ── Colisión jugador-terreno ── */
+            /* ── Colisiones jugador-terreno ── */
             player.grounded = false;
             for (let i = 0; i < terrain.length; i++) {
                 const dir = colCheck(player, terrain[i]);
@@ -292,17 +300,16 @@ export default function Juego2() {
                 } else if (dir === 'b') {
                     player.grounded = true;
                     player.jumping  = false;
-                    player.jumpsLeft = 2;   // reset doble salto al aterrizar
                 }
                 if (bullet.active && colCheck(bullet, terrain[i])) {
                     bullet.active = false; bullet.x = -100;
                 }
             }
 
-            // Nivel 1: aplica velY=0 antes del movimiento cuando grounded
+            // Igual que Juego.js: velY=0 cuando en suelo, antes de mover
             if (player.grounded) player.velY = 0;
 
-            /* Filtrar balas del boss que chocan con terreno */
+            /* Balas del boss que chocan con terreno */
             bossBullets = bossBullets.filter(bb => {
                 for (let i = 0; i < terrain.length; i++) {
                     if (colCheck(bb, terrain[i])) return false;
@@ -323,14 +330,15 @@ export default function Juego2() {
                     bossHP--;
                     bossHitFlash = 15;
                     if (bossHP <= 0) {
-                        boss.alive    = false;
-                        status        = 'win';
-                        winStartFrame = frameCount;
+                        boss.alive     = false;
+                        status         = 'win';
+                        winStartFrame  = frameCount;
+                        winKeyReleased = false;  // obliga a soltar Space
                     }
                 }
             }
 
-            /* ── IA del boss (Metal Slug) ── */
+            /* ── IA del boss ── */
             if (boss.alive) {
                 const phase2       = bossHP <= 4;
                 const spd          = phase2 ? boss.baseSpeed * 1.8 : boss.baseSpeed;
@@ -381,7 +389,6 @@ export default function Juego2() {
                 boss.x += boss.velX;
                 boss.y += boss.velY;
 
-                /* Aterrizaje del boss */
                 if (boss.y + boss.height >= FLOOR) {
                     const wasAirborne = !boss.grounded;
                     boss.y        = FLOOR - boss.height;
@@ -412,7 +419,6 @@ export default function Juego2() {
                     if (boss.state === 'charge') { boss.state = 'walk'; boss.stateTimer = 0; boss.nextAction = 100; boss.velX = 0; }
                 }
 
-                /* Disparos horizontales */
                 boss.shotTimer++;
                 if (boss.shotTimer >= shotInterval && boss.state !== 'jump') {
                     boss.shotTimer = 0;
@@ -434,14 +440,14 @@ export default function Juego2() {
                     }
                 }
 
-                if (colCheck(player, boss)) resetPlayer();
+                if (colCheck(player, boss)) loseLife();
             }
 
             /* ── Balas del boss ── */
             bossBullets = bossBullets.filter(bb => {
                 bb.x += bb.velX;
                 bb.y += bb.velY;
-                if (overlaps(player, bb)) { resetPlayer(); return false; }
+                if (overlaps(player, bb)) { loseLife(); return false; }
                 return bb.x > -60 && bb.x < WIDTH + 60 && bb.y < HEIGHT + 60 && bb.y > -60;
             });
 
@@ -450,7 +456,7 @@ export default function Juego2() {
                 sw.ttl--;
                 sw.x     -= 3.5;
                 sw.width += 7;
-                if (overlaps(player, sw)) resetPlayer();
+                if (overlaps(player, sw)) loseLife();
                 return sw.ttl > 0;
             });
 
@@ -458,7 +464,7 @@ export default function Juego2() {
             for (let i = 3; i < terrain.length; i++) {
                 const t = terrain[i];
                 for (let px = t.x; px < t.x + t.width; px += 50) {
-                    ctx.drawImage(imgSuelo, px, t.y, Math.min(50, t.x + t.width - px), 20);
+                    ctx.drawImage(imgSuelo, px, t.y, Math.min(50, t.x + t.width - px), t.height);
                 }
             }
 
@@ -514,20 +520,28 @@ export default function Juego2() {
             if (player.facing === 'right') ctx.drawImage(imgYo,     player.x, player.y, player.width, player.height);
             else                           ctx.drawImage(imgYoLeft, player.x, player.y, player.width, player.height);
 
-            /* ── HUD arriba (siempre encima de todo) ── */
+            /* ── HUD (siempre encima) ── */
             ctx.fillStyle = 'rgba(0,0,0,0.72)';
             ctx.fillRect(0, 0, WIDTH, 46);
             ctx.fillStyle = '#ff9b00';
             ctx.fillRect(0, 46, WIDTH, 2);
 
-            const heartGap    = 28;
-            const heartStartX = WIDTH / 2 - (BOSS_MAX_HP * heartGap) / 2 + 4;
             ctx.font = '20px serif';
+
+            // Vidas del jugador — izquierda
+            for (let h = 0; h < PLAYER_MAX_LIVES; h++) {
+                ctx.fillStyle = h < playerLives ? '#ff2255' : 'rgba(255,255,255,0.12)';
+                ctx.fillText('♥', 20 + h * 26, 34);
+            }
+
+            // Vida del boss — centro
+            const heartGap    = 26;
+            const heartStartX = WIDTH / 2 - (BOSS_MAX_HP * heartGap) / 2 + 4;
             for (let h = 0; h < BOSS_MAX_HP; h++) {
-                ctx.fillStyle = h < bossHP ? '#ff2255' : 'rgba(255,255,255,0.12)';
+                ctx.fillStyle = h < bossHP ? '#ffaa00' : 'rgba(255,255,255,0.12)';
                 ctx.fillText('♥', heartStartX + h * heartGap, 34);
             }
-            const barW = 260;
+            const barW = 240;
             const barX = WIDTH / 2 - barW / 2;
             ctx.fillStyle = 'rgba(0,0,0,0.55)';
             ctx.fillRect(barX, 8, barW, 10);
@@ -538,11 +552,32 @@ export default function Juego2() {
             ctx.lineWidth   = 1;
             ctx.strokeRect(barX, 8, barW, 10);
 
-            /* ── Pantalla de victoria ── */
+            /* ── Game over ── */
+            if (status === 'gameover') {
+                ctx.save();
+                ctx.fillStyle = 'rgba(0,0,0,0.75)';
+                ctx.fillRect(0, 0, WIDTH, HEIGHT);
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#ff2200';
+                ctx.font      = 'bold 28px "Press Start 2P", monospace';
+                ctx.fillText('GAME OVER', WIDTH / 2, HEIGHT / 2 - 30);
+                ctx.fillStyle = '#ffffff';
+                ctx.font      = '12px "Press Start 2P", monospace';
+                ctx.fillText('Pulsa ESPACIO para reintentar', WIDTH / 2, HEIGHT / 2 + 30);
+                ctx.textAlign = 'left';
+                ctx.restore();
+                if (keys[32] || touchShoot.current) {
+                    reset();
+                    requestId = requestAnimationFrame(update);
+                    return;
+                }
+            }
+
+            /* ── Victoria ── */
             if (status === 'win') {
                 ctx.save();
-                const fadeIn = Math.min(0.85, (frameCount - winStartFrame) * 0.012);
-                ctx.fillStyle = `rgba(0,0,0,${fadeIn})`;
+                const elapsed = frameCount - winStartFrame;
+                ctx.fillStyle = `rgba(0,0,0,${Math.min(0.85, elapsed * 0.012)})`;
                 ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
                 ctx.textAlign = 'center';
@@ -554,8 +589,7 @@ export default function Juego2() {
                 ctx.font      = '14px "Press Start 2P", monospace';
                 ctx.fillText('La Piña ha caído.', WIDTH / 2, HEIGHT / 2);
 
-                // El aviso solo aparece cuando ya puede continuar (después del delay)
-                if (frameCount > winStartFrame + 120) {
+                if (elapsed > 120) {
                     ctx.fillStyle = '#ffffff';
                     ctx.font      = '11px "Press Start 2P", monospace';
                     ctx.fillText('Pulsa ESPACIO para continuar', WIDTH / 2, HEIGHT / 2 + 50);
@@ -564,8 +598,12 @@ export default function Juego2() {
                 ctx.textAlign = 'left';
                 ctx.restore();
 
-                // Solo acepta input después de 120 frames (2 segundos) para que no se salte
-                if (frameCount > winStartFrame + 120 && (keys[32] || touchShoot.current)) {
+                // winKeyReleased: fuerza soltar Space antes de poder continuar
+                // evita que la misma pulsación que disparó la última bala active el redirect
+                const spaceNow = !!(keys[32] || touchShoot.current);
+                if (!winKeyReleased && !spaceNow) winKeyReleased = true;
+
+                if (winKeyReleased && spaceNow && elapsed > 120) {
                     cancelAnimationFrame(requestId);
                     window.location.href = '/about';
                     return;
