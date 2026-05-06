@@ -471,17 +471,20 @@ export default function Juego2() {
             });
 
             /* ── Dibujar suelo y plataformas ── */
-            // relleno de tierra bajo el tile de hierba
+            // relleno sólido de toda el área de suelo (tapa cualquier hueco entre tiles)
             ctx.fillStyle = '#7a4520';
-            ctx.fillRect(0, FLOOR + 50, WIDTH, HEIGHT - FLOOR - 50);
-            // fila de tiles de hierba
-            for (let px = 0; px < WIDTH; px += 50) {
-                ctx.drawImage(imgSuelo, px, FLOOR, 50, 50);
+            ctx.fillRect(0, FLOOR, WIDTH, HEIGHT - FLOOR);
+            // tiles de hierba solapados para franja continua sin juntas visibles
+            for (let px = 0; px <= WIDTH; px += 48) {
+                ctx.drawImage(imgSuelo, Math.floor(px), FLOOR, 52, 52);
             }
+            // plataformas
             for (let i = 3; i < terrain.length; i++) {
                 const t = terrain[i];
-                for (let px = t.x; px < t.x + t.width; px += 50) {
-                    ctx.drawImage(imgSuelo, px, t.y, Math.min(50, t.x + t.width - px), 50);
+                ctx.fillStyle = '#7a4520';
+                ctx.fillRect(t.x, t.y, t.width, t.height + 20);
+                for (let px = t.x; px <= t.x + t.width; px += 48) {
+                    ctx.drawImage(imgSuelo, Math.floor(px), t.y, 52, 52);
                 }
             }
 
