@@ -83,8 +83,9 @@ export default function Juego2() {
         let frameCount  = 0;
         let bossHitFlash = 0;
 
-        const friction = 0.8;
-        const gravity  = 0.5;
+        const friction      = 0.8;
+        const gravity       = 0.2;   // igual que nivel 1 → jugador fluido
+        const bossGravity   = 0.5;   // el jefe cae más rápido (más pesado)
 
         let status, player, boss, bullet, bossHP;
         let imgYo, imgYoLeft, imgPina, imgSuelo, imgFondo;
@@ -237,7 +238,7 @@ export default function Juego2() {
             if ((keys[38] || keys[87] || touchJump.current) && !player.jumping && player.grounded) {
                 player.jumping  = true;
                 player.grounded = false;
-                player.velY     = -player.speed * 2.8;
+                player.velY     = -player.speed * 2;
             }
             if (keys[39] || keys[68] || touchRight.current) {
                 player.facing = 'right';
@@ -306,7 +307,7 @@ export default function Juego2() {
                 const spd         = phase2 ? boss.baseSpeed * 1.9 : boss.baseSpeed;
                 const shotInterval = phase2 ? 72 : 130;
 
-                if (!boss.grounded) boss.velY += gravity;
+                if (!boss.grounded) boss.velY += bossGravity;
 
                 boss.stateTimer++;
 
@@ -323,7 +324,7 @@ export default function Juego2() {
                                 boss.nextAction = 65;
                             } else {
                                 boss.state    = 'jump';
-                                boss.velY     = -11;
+                                boss.velY     = -14;
                                 boss.grounded = false;
                                 boss.nextAction = 999;
                             }
