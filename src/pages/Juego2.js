@@ -14,7 +14,7 @@ const BOSS_MAX_HP     = 8;
 const PLAYER_MAX_LIVES = 3;
 const WIDTH  = 800;
 const HEIGHT = 600;
-const FLOOR  = HEIGHT - 80;   // 520 — deja 80px libres abajo para los controles
+const FLOOR  = HEIGHT - 50;   // 550 — tile de suelo ocupa exactamente los últimos 50px
 
 export default function Juego2() {
     const touchLeft  = useRef(false);
@@ -187,7 +187,7 @@ export default function Juego2() {
             terrain = [];
             terrain.push({ x: 0,       y: 0,    width: 1,     height: HEIGHT });
             terrain.push({ x: WIDTH-1, y: 0,    width: 1,     height: HEIGHT });
-            terrain.push({ x: 0,       y: FLOOR, width: WIDTH, height: HEIGHT - FLOOR });
+            terrain.push({ x: 0, y: FLOOR, width: WIDTH, height: 50 });
 
             // 3 plataformas
             terrain.push({ x: 75,  y: 420, width: 150, height: 40 });
@@ -470,14 +470,10 @@ export default function Juego2() {
                 return sw.ttl > 0;
             });
 
-            /* ── Dibujar suelo principal ── */
+            /* ── Dibujar suelo y plataformas ── */
             for (let px = 0; px < WIDTH; px += 50) {
                 ctx.drawImage(imgSuelo, px, FLOOR, 50, 50);
             }
-            ctx.fillStyle = '#2a1508';
-            ctx.fillRect(0, FLOOR + 50, WIDTH, HEIGHT - FLOOR - 50);
-
-            /* ── Dibujar plataformas ── */
             for (let i = 3; i < terrain.length; i++) {
                 const t = terrain[i];
                 for (let px = t.x; px < t.x + t.width; px += 50) {
