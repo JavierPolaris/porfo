@@ -1,159 +1,118 @@
 /* src/components/Navbar.css */
 
-/* Navbar */
 .navbar {
-    width: 100%;
-    height: 60px;
-    background-color: rgb(73 64 104); /* Fondo semitransparente */
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
+  width: 100%;
+  height: 60px;
+  background-color: rgb(73, 64, 104);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
 }
 
-/* Sección izquierda del navbar */
 .navbar-left {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  gap: 10px;
 }
 
-/* Logo en el navbar */
 .logo {
-    width: 50px;
-    height: auto;
-    margin-right: 10px;
+  width: 50px;
+  height: auto;
 }
 
-/* Texto en el navbar */
 .textLo {
-    font-family: 'Poppins', sans-serif;
-    font-size: 24px;
-    color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.1em;
 }
 
-/* Sección derecha del navbar */
 .navbar-right {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
-/* Botón de Menú Hamburguesa */
+/* ── Hamburger ────────────────────────────── */
+
 .hamburger {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    padding: 10px;
-    transition: transform 0.3s ease;
-}
-
-.hamburger.active {
-    transform: rotate(90deg);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  transition: transform 0.3s ease;
 }
 
 .hamburger-line {
-    width: 25px;
-    height: 3px;
-    background-color: #fff;
-    transition: all 0.3s ease;
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
 }
 
-/* Transformación del botón al estar activo */
 .hamburger.active .hamburger-line:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+  transform: rotate(45deg) translate(5px, 5px);
 }
 
 .hamburger.active .hamburger-line:nth-child(2) {
-    opacity: 0;
+  opacity: 0;
+  transform: scaleX(0);
 }
 
 .hamburger.active .hamburger-line:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -5px);
+  transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Menú Desplegable */
+/* ── Dropdown ─────────────────────────────── */
+
 .dropdown-menu {
-    position: fixed;
-    top: 60px;
-    right: 20px;
-    background-color: rgb(0 205 176);
-    padding: 20px;
-    border-radius: 8px;
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+  position: fixed;
+  top: 60px;
+  right: 16px;
+  min-width: 200px;
+  background-color: rgb(53, 46, 82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  z-index: 999;
+  overflow: hidden;
+
+  /* Animación suave */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: top right;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
 }
 
 .dropdown-menu.open {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
 }
 
+/* ── Responsive ───────────────────────────── */
 
-
-/* Ajustes Responsivos */
 @media (max-width: 768px) {
-    .textLo {
-        font-size: 20px;
-    }
+  .textLo {
+    font-size: 18px;
+  }
 
-    .hamburger-line {
-        width: 20px;
-        height: 2px;
-    }
+  .hamburger-line {
+    width: 22px;
+  }
 
-    .dropdown-menu {
-        right: 0;
-        top: 60px;
-        padding: 0;
-        background-color: transparent;
-    }
-
-   
-}
-
-
-/* Estilos para el logo principal y textLo en el contenido */
-.logo-main {
-    width: 91px;
-    height: 110px;
-}
-
-.textLo-main {
-    position: absolute;
-    width: 138px;
-    height: 36px;
-    left: 182px;
-    top: 56px;
-    font-family: 'Poppins', sans-serif;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 36px;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    letter-spacing: 0.27em;
-    color: #FF003D;
-}
-
-
-
-/* Ocultar el menú desplegable cuando no está activo */
-.dropdown-menu {
-    display: none;
-}
-
-.dropdown-menu.open {
-    display: block;
+  .dropdown-menu {
+    right: 8px;
+    min-width: 180px;
+  }
 }

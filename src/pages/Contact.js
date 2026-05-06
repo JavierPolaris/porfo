@@ -4,63 +4,47 @@ import '../sass/contact.css';
 import Navbar from '../components/Navbar';
 
 function Contact() {
-    // Estado para gestionar los datos del formulario
-    const [formData, setFormData] = useState({
-        email: '',
-        nombre: '',
-        mensaje: ''
-    });
-
-    // Estado para saber si el formulario ha sido enviado
+    const [formData, setFormData] = useState({ email: '', nombre: '', mensaje: '' });
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState(false);
 
-    // Cambiar el background del body y el color del navbar
     useEffect(() => {
         document.body.style.backgroundColor = '#536b81';
         const navbar = document.querySelector('.navbar');
-        if (navbar) {
-            navbar.style.backgroundColor = 'rgb(255, 155, 0)';
-        }
-
-        // Limpiar el estilo al salir de la página de contacto
+        if (navbar) navbar.style.backgroundColor = 'rgb(255, 155, 0)';
         return () => {
             document.body.style.backgroundColor = '';
-            if (navbar) {
-                navbar.style.backgroundColor = '';
-            }
+            if (navbar) navbar.style.backgroundColor = '';
         };
     }, []);
 
-    // Manejar cambios en los campos del formulario
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // Manejar el envío del formulario
     const handleSubmit = (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitError(false);
 
-        // Enviar los datos al backend usando fetch
         fetch('https://porfo-rho.vercel.app/api/send-email', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData),
         })
-        .then(response => {
-            if (response.ok) {
-                setIsFormSubmitted(true);  // Si el envío es exitoso, mostrar el mensaje de éxito
-            } else {
-                console.error('Error al enviar el correo');
-            }
-        })
-        .catch(error => {
-            console.error('Error en la solicitud:', error);
-        });
+            .then(response => {
+                setIsSubmitting(false);
+                if (response.ok) {
+                    setIsFormSubmitted(true);
+                } else {
+                    setSubmitError(true);
+                }
+            })
+            .catch(() => {
+                setIsSubmitting(false);
+                setSubmitError(true);
+            });
     };
 
     return (
@@ -68,7 +52,7 @@ function Contact() {
             <Navbar />
             <div className='contactoCont'>
                 <div className='contenCon'>
-                    <img className='imgSwamp' src={Swamp} alt="Imagen Swamp" />
+                    <img className='imgSwamp' src={Swamp} alt="Javier García-Rojo Cantón" />
                 </div>
                 <div className="imgTop">
                     <div className='contenedorCont'>
@@ -76,14 +60,14 @@ function Contact() {
                         <section className='contact'>
                             <div className="cuerpoText">
                                 <h3 className='textContM'>Puedes contactar conmigo cuando quieras</h3>
-                                <p className='pContact'>Estoy deseando que hablemos!!</p>
+                                <p className='pContact'>¡Estoy deseando que hablemos!</p>
                                 <section id='rrss1' className='contact-section'>
                                     <div className='contact-links'>
                                         <a href='https://www.linkedin.com/in/javierg-rcanton/' target='_blank' rel='noreferrer' className='contact-details'>
-                                            Linkedin
+                                            LinkedIn
                                         </a>
                                         <a href='https://github.com/JavierPolaris' target='_blank' rel='noreferrer' className='contact-details'>
-                                            Github
+                                            GitHub
                                         </a>
                                         <a href='https://twitter.com/JavierPolaris' target='_blank' rel='noreferrer' className='contact-details'>
                                             Twitter
@@ -92,56 +76,70 @@ function Contact() {
                                 </section>
                             </div>
 
-                            {/* Mostrar el formulario solo si no se ha enviado */}
                             {!isFormSubmitted ? (
                                 <div className="signupFrm">
                                     <form className="form" onSubmit={handleSubmit}>
-                                        <h1 className="title">Contact</h1>
+                                        <h1 className="title">Contacto</h1>
 
                                         <div className="inputContainer">
-                                            <input 
-                                                type="email" 
-                                                className="input" 
-                                                name='email' 
-                                                value={formData.email} 
-                                                onChange={handleChange} 
-                                                placeholder="Tu email" 
-                                                required 
+                                            <input
+                                                type="email"
+                                                className="input"
+                                                name='email'
+                                                value={formData.email}
+                                                onChange={handleChange}
+                                                placeholder="Tu email"
+                                                required
                                             />
                                             <label className="label">Email</label>
                                         </div>
 
                                         <div className="inputContainer">
-                                            <input 
-                                                type="text" 
-                                                className="input" 
-                                                name='nombre' 
-                                                value={formData.nombre} 
-                                                onChange={handleChange} 
-                                                placeholder="Tu nombre" 
-                                                required 
+                                            <input
+                                                type="text"
+                                                className="input"
+                                                name='nombre'
+                                                value={formData.nombre}
+                                                onChange={handleChange}
+                                                placeholder="Tu nombre"
+                                                required
                                             />
                                             <label className="label">Nombre</label>
                                         </div>
 
-                                        <div className="inputContainer">
-                                            <textarea 
-                                                className="input" 
-                                                name='mensaje' 
-                                                value={formData.mensaje} 
-                                                onChange={handleChange} 
-                                                placeholder="Tu mensaje" 
-                                                required 
+                                        <div className="inputContainer inputContainer--textarea">
+                                            <textarea
+                                                className="input input--textarea"
+                                                name='mensaje'
+                                                value={formData.mensaje}
+                                                onChange={handleChange}
+                                                placeholder="Tu mensaje"
+                                                required
                                             />
                                             <label className="label">Mensaje</label>
                                         </div>
 
-                                        <input type="submit" className="submitBtn" value="Enviar" />
+                                        {submitError && (
+                                            <p className="error-msg">
+                                                Error al enviar. Inténtalo de nuevo.
+                                            </p>
+                                        )}
+
+                                        <button
+                                            type="submit"
+                                            className="submitBtn"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? 'Enviando…' : 'Enviar'}
+                                        </button>
                                     </form>
                                 </div>
                             ) : (
-                                // Mostrar mensaje de éxito cuando se haya enviado el formulario
-                                <h3 className="mensaje-enviado">¡Mensaje enviado!</h3>
+                                <div className="success-msg">
+                                    <p className="success-icon">✓</p>
+                                    <h3>¡Mensaje enviado!</h3>
+                                    <p>Te responderé lo antes posible.</p>
+                                </div>
                             )}
                         </section>
                     </div>

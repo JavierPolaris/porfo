@@ -3,7 +3,7 @@
 /* Reset específico para la página de Projects */
 .projects {
     background-image: url('../assets/img/proyects.webp');
-    background-size: auto;
+    background-size: cover;
     background-position: center;
     color: white;
     min-height: 100vh;
