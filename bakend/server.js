@@ -4,7 +4,7 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://porfo-rho.vercel.app',
+  origin: process.env.FRONTEND_URL || 'https://aboutjavi.netlify.app',
   methods: ['POST'],
 }));
 app.use(express.json());
