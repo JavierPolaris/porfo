@@ -16,7 +16,7 @@ const emailLimiter = rateLimit({
   message: 'Demasiadas peticiones, inténtalo más tarde',
 });
 
-app.post('/api/send-email', emailLimiter, (req, res) => {
+app.post('/api/send-email', emailLimiter, async (req, res) => {
   const { email, nombre, mensaje } = req.body;
 
   if (!email || !nombre || !mensaje) {
@@ -31,22 +31,20 @@ app.post('/api/send-email', emailLimiter, (req, res) => {
     },
   });
 
-  const mailOptions = {
-    from: `"${nombre}" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_USER,
-    replyTo: email,
-    subject: `Nuevo mensaje de ${nombre}`,
-    text: `Nombre: ${nombre}\nCorreo: ${email}\nMensaje: ${mensaje}`,
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error('Error enviando correo:', error.message);
-      return res.status(500).send('Error al enviar el correo');
-    }
+  try {
+    const info = await transporter.sendMail({
+      from: `"${nombre}" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      replyTo: email,
+      subject: `Nuevo mensaje de ${nombre}`,
+      text: `Nombre: ${nombre}\nCorreo: ${email}\nMensaje: ${mensaje}`,
+    });
     console.log('Correo enviado:', info.response);
     res.status(200).send('Correo enviado correctamente');
-  });
+  } catch (error) {
+    console.error('Error enviando correo:', error.message);
+    res.status(500).send('Error al enviar el correo');
+  }
 });
 
 const PORT = process.env.PORT || 5000;
