@@ -1,6 +1,7 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const app = express();
 
 app.use(cors({
@@ -9,7 +10,13 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.post('/api/send-email', (req, res) => {
+const emailLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  message: 'Demasiadas peticiones, inténtalo más tarde',
+});
+
+app.post('/api/send-email', emailLimiter, (req, res) => {
   const { email, nombre, mensaje } = req.body;
 
   if (!email || !nombre || !mensaje) {
